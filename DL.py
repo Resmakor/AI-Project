@@ -1,4 +1,4 @@
-# 197 instancji, 23 cechy, 2 klasy (zdrowy 0, chory 1) dane uporządkowane, brak danych nieokreslonych, 24 kolumny z czego jedna odrzucamy calkiem (name)
+# 197 instancji, 23 cechy, 2 klasy (zdrowy 0, chory 1) dane nieuporządkowane, brak danych nieokreslonych, 24 kolumny z czego jedna odrzucamy calkiem (name)
 
 from torch.autograd import Variable
 import torch.nn as nn
@@ -19,6 +19,8 @@ y_t = y_t.reshape(1, y_t.shape[0])
 
 np.transpose([np.array(range(x.shape[0])), x.min(axis=1), x.max(axis=1)])
 
+
+# Normalizacja
 x_min = x.min(axis=1)
 x_max = x.max(axis=1)
 x_norm_max = 1
@@ -31,6 +33,10 @@ for i in range(x.shape[0]):
 np.transpose([np.array(range(x.shape[0])),
              x_norm.min(axis=1), x_norm.max(axis=1)])
 
+# Przed posortowaniem
+plt.plot(y_t[0])
+plt.show()
+
 
 y_t_s_ind = np.argsort(y_t)
 x_n_s = np.zeros(x.shape)
@@ -38,6 +44,10 @@ y_t_s = np.zeros(y_t.shape)
 for i in range(x.shape[1]):
     y_t_s[0, i] = y_t[0, y_t_s_ind[0, i]]
     x_n_s[:, i] = x_norm[:, y_t_s_ind[0, i]]
+
+# Po posortowaniu
+plt.plot(y_t_s[0])
+plt.show()
 
 hkl.dump([x, y_t, x_norm, x_n_s, y_t_s], "parkinsons.hkl")
 
@@ -114,7 +124,7 @@ for k1_ind in range(len(K1_vec)):
         correct = (torch.argmax(y_pred, dim=1) ==
                    y_test).type(torch.FloatTensor)
         PK = correct.mean().item() * 100
-        print("K1 {} | K2 {} | PK {}".format(
+        print("K1 {} | K2 {} | PK {} ".format(
             K1_vec[k1_ind], K2_vec[k2_ind], PK))
         PK_2D_K1K2[k1_ind, k2_ind] = PK
 
