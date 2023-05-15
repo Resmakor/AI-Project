@@ -59,54 +59,50 @@ gdzie:
 \section{Zagadnienia teoretyczne}
 \subsection{Wstęp do sieci neuronowych}
 
-Sieci neuronowe to jedno z najbardziej fascynujących paradygmatów programowania, jakie kiedykolwiek powstały.
-W tradycyjnym podejściu do programowania komputerowi nakazujemy, co ma zrobić, dzieląc duże problemy na wiele mniejszych, precyzyjnie określonych zadań, które komputer może łatwo realizować.
+Sieć neuronowa to jedno z najbardziej fascynujących paradygmatów programowania, jakie kiedykolwiek powstały.
+W tradycyjnym podejściu do programowania komputerowi nakazujemy, co ma zrobić, dzieląc duże problemy na wiele mniejszych, precyzyjnie określonych zadań, które komputer może łatwo zrealizować.
 W przypadku sieci neuronowych nie instruujemy komputera, jak ma rozwiązać nasz problem.
 Zamiast tego, sieć neuronowa uczy się na podstawie obserwacji danych, tworząc własne rozwiązanie dla danego problemu.
 Jednakże do roku 2006 nie mieliśmy sposobu na efektywne szkolenie sieci neuronowych, które przewyższałyby bardziej tradycyjne podejścia.
 To, co zmieniło się w 2006 roku, to odkrycie technik uczenia w tzw. głębokich sieciach neuronowych, znane teraz jako głębokie uczenie.
 Od tego czasu, głębokie uczenie jest stale rozwijane i obecnie osiąga wybitne wyniki w wielu ważnych dziedzinach, takich jak widzenie komputerowe, rozpoznawanie mowy czy też przetwarzanie języka naturalnego.
-Są one szeroko wdrażane przez takie firmy jak Google, Microsoft i Facebook.
+Są one szeroko wdrażane przez takie firmy jak Google, Microsoft i Facebook. [1]
 
 
-\subsection{Historia sieci neuronowych [3]}
+\subsection{Historia sieci neuronowych}
 
 
-Historia sztucznych neuronów sięga lat 40. XX wieku, kiedy Warren McCulloch, neurobiolog, i Walter Pitts, logik, zaproponowali modelowanie biologicznego działania organicznego neuronu w ramach pierwszego sztucznego neuronu.
-Ich celem było pokazanie, jak proste jednostki mogą replikować funkcje logiczne.
+Historia sztucznych neuronów sięga lat 40. XX wieku, kiedy Warren McCulloch (neurobiolog) i Walter Pitts (logik) zaproponowali model pierwszego sztucznego neuronu.
 
 
-Zainspirowany publikacją Warrena McCullocha i Waltera Pittsa, Frank Rosenblatt pracował w latach 50. nad Perceptronem: pojedynczą warstwą neuronów zdolną do klasyfikacji obrazów o wielkości kilkuset pikseli.
+Zainspirowany publikacją Warrena McCullocha i Waltera Pittsa, Frank Rosenblatt pracował w latach 50. nad perceptronem, czyli pojedynczą warstwą neuronów zdolną do klasyfikacji obrazów o wielkości kilkuset pikseli.
 Można to uznać za pierwszego przodka współczesnych sieci neuronowych.
-Geniusz Rosenblatta polegał na zaimplementowaniu algorytmu trenowania neuronów na podstawie zbioru danych.
 Rosenblatt zainspirował się pracami kanadyjskiego psychologa Donalda Hebba, który w swojej książce Organization of Behavior z 1949 roku teoretyzował, że połączenia między neuronami (organicznymi) są wzmacniane w miarę ich używania (zostanie to potwierdzone dopiero w latach 60-tych).
-Pomysł Rosenblatta polegał na powieleniu tego za pomocą jego Perceptronu.
-New York Times donosił, że Rosenblatt prorokował, iż Perceptrony w przyszłości będą w stanie "rozpoznawać ludzi i wołać ich imiona", "błyskawicznie tłumaczyć mowę w jednym języku na mowę lub pismo w innym języku", "być wystrzeliwane na planety jako mechaniczni eksploratorzy kosmosu", ale także "reprodukować się" i być samoświadome.
+Pomysł Rosenblatta polegał na powieleniu tego za pomocą jego perceptronu.
+New York Times donosił, że Rosenblatt prorokował, iż perceptrony w przyszłości będą w stanie "rozpoznawać ludzi i wołać ich imiona", "błyskawicznie tłumaczyć mowę w jednym języku na mowę lub pismo w innym języku", "być wystrzeliwane na planety jako mechaniczni eksploratorzy kosmosu", ale także "reprodukować się" i być samoświadome. [3]
 
-Niestety, ze względu na algorytm uczenia, Perceptron był ograniczony do pojedynczej warstwy neuronów.
-Pomimo dużego zainteresowania tymi wczesnymi osiągnięciami, profesorowie MIT Marvin Minsky i Seymour Papert opublikowali w 1969 roku książkę (Perceptrons: An introduction to computational geometry ) pokazującą, że Perceptron miał ograniczone możliwości.
-Spowodowało to pierwszą "zimę sieci neuronowych" do połowy lat 80.
+Niestety, ze względu na algorytm uczenia, perceptron był ograniczony do pojedynczej warstwy neuronów.
+Pomimo dużego zainteresowania tymi wczesnymi osiągnięciami, profesorowie MIT Marvin Minsky i Seymour Papert opublikowali w 1969 roku książkę (Perceptrons: An introduction to computational geometry) pokazującą, że perceptron miał ograniczone możliwości.
+Spowodowało to pierwszą "zimę sieci neuronowych" do połowy lat 80. [3]
 
-Paul Werbos, w swojej pracy doktorskiej z 1974 roku, jako pierwszy zaproponował wykorzystanie backpropagacji do optymalizacji sieci neuronowych.
+Paul Werbos, w swojej pracy doktorskiej z 1974 roku, jako pierwszy zaproponował wykorzystanie propagacji wstecznej do optymalizacji sieci neuronowych.
 Jednak, jako że byliśmy w pierwszej zimie sieci neuronowych, jego praca przeszła niezauważona przez środowisko naukowe.
-Dopiero później, za sprawą pracy Rumelharta et al. (1986), backpropagacja została spopularyzowana jako technika treningowa dla sieci neuronowych.
-Uzbrojeni w backpropagację, badacze mogli teraz używać sieci neuronowych w wielu przypadkach użycia.
+Dopiero później, za sprawą pracy Rumelharta et al. (1986), propagacja wsteczna została spopularyzowana jako technika treningowa dla sieci neuronowych.
 W szczególności sieci neuronowe zostały wykorzystane do rozpoznawania pisma ręcznego na podstawie techniki zaproponowanej w 1989 roku przez Yanna LeCuna.
 Jego model został z powodzeniem zaimplementowany, kończąc na odczytywaniu cyfr napisanych ręcznie w około 10 do 20\% wszystkich czeków przetwarzanych w USA.
 Niemniej jednak wkrótce pojawił się nowy problem, powodujący, że uczenie stawało się powolne i niestabilne.
+W miarę jak sieci neuronowe stawały się coraz głębsze (z większą liczbą warstw), wsteczna propagacja stawała się wolniejsza (problem zanikającego gradientu). [3]
 
-W miarę jak sieci neuronowe stawały się coraz głębsze (z większą liczbą warstw), wsteczna propagacja stawała się wolniejsza z powodu problemu znikających gradientów.
-Mówiąc prosto, algorytm wstecznej propagacji wymaga użycia pochodnych (zboczy) funkcji aktywacji.
-W tamtych czasach, funkcje aktywacji były głównie sigmoidalne i tanh.
-Gdy układasz wiele warstw, zejście gradientowe staje się coraz wolniejsze dla głębszych warstw, co powoduje wykładniczo powolną optymalizację.
-
-Na początku lat 2010, wiele badań zalecało użycie określonej funkcji aktywacji (ReLu) w neuronach do przekazywania informacji. To, wraz z lepszymi algorytmami optymalizacji (takimi jak ADAM), pomogło w efektywnym trenowaniu głębszych sieci neuronowych.
-
+Na początku lat 2010, wiele badań zalecało użycie określonej funkcji aktywacji (ReLu) w neuronach do przekazywania informacji.
+To, wraz z lepszymi algorytmami optymalizacji (takimi jak ADAM), pomogło w efektywnym trenowaniu głębszych sieci neuronowych. [3]
 
 W ostatnich latach dokonano znaczącego postępu w dziedzinie sztucznej inteligencji.
-Sztuczna inteligencja taka jak AlphaGo i GPT-3 wykazały zdolność do osiągania wyjątkowych wyników w dziedzinach gier planszowych i generowania tekstów. Jednak to tylko początek. W przyszłości możemy spodziewać się dalszego rozwoju sztucznej inteligencji, która będzie coraz bardziej zaawansowana i wszechstronna.
+Przykłady sztucznej inteligencji takie jak AlphaGo i GPT-3 wykazały zdolność do osiągania wyjątkowych wyników w dziedzinach gier planszowych i generowania tekstów.
+Jednak to tylko początek.
+W przyszłości możemy spodziewać się dalszego rozwoju sztucznej inteligencji, która będzie coraz bardziej zaawansowana i wszechstronna.
 Sztuczna inteligencja ma potencjał do rewolucjonizowania różnych dziedzin, takich jak medycyna, przemysł, transport czy badania naukowe.
 Jej zdolność do szybkiego uczenia się, analizowania ogromnych ilości danych i podejmowania złożonych decyzji otwiera nowe możliwości i perspektywy.
+
 \subsection{Matematyczny opis sztucznego neuronu}
 Podstawowym elementem budującym strukturę sieci neuronowej jest neuron. Jest to element, który przetwarza informacje.
 W pewnym, uproszczonym stopniu jest wzorowany na funkcjonowaniu biologicznej komórki nerwowej.
@@ -123,10 +119,10 @@ Jednym z najważniejszych składników neuronu są wagi, których wartości decy
 
 
 Każdy pojedynczy neuron przyjmuje sygnały wejściowe, które są następnie przetwarzane.
-Każde wejście ma przypisany współczynnik wagowy, który określa, jak bardzo wpływa ono na wynik neuronu.
-Dodatkowo, neuron posiada "bias", czyli wartość stałą, która jest taka sama dla wszystkich neuronów w danej warstwie.
+Każde wejście ma przypisany współczynnik wagowy, który określa jak bardzo wpływa ono na wynik neuronu.
+Dodatkowo, neuron posiada "bias", czyli dodatkowe wejście, na którym występuje stała wartość.
 Wszystkie te informacje są sumowane, gdzie jest obliczane łączne pobudzenie neuronu.
-Następnie wartość pobudzenia przechodzi przez funkcję aktywacji, która określa sygnał wyjściowy neuronu, który jest określony wzorem:
+Następnie wartość pobudzenia przechodzi przez funkcję aktywacji, która określa sygnał wyjściowy neuronu dany wzorem:
 \[
     y = \sum_{j=1}^{L} f(w_{j} x_{j} + b)
 \]
@@ -140,8 +136,23 @@ gdzie:
     \item $b$ -- bias [2].
 \end{itemize}
 
+\subsection{Funkcja aktywacji}
+
+
 \subsection{Sieć głęboka}
-Nielsona tutaj przywołać
+Sieci głębokie to rodzaj modeli uczenia maszynowego, które składają się z wielu warstw neuronów, zwanych warstwami głębokimi.
+Każda warstwa wykonuje operacje na danych wejściowych, a następnie przekazuje wyniki do kolejnej warstwy, aż do warstwy wyjściowej, która generuje ostateczne predykcje lub wyniki.
+
+Warstwa sieci głębokiej składa się z macierzy wag (w), wektora przesunięć (b), funkcji aktywacji (f) oraz wektora sygnałów na wyjściu warstwy (y).
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth, keepaspectratio]{siec_wielowarstwowa.png}
+    \caption{Sieć wielowarstwowa jednokierunkowa [4]}
+    \label{fig:siec}
+\end{figure}
+
+
+
 \section{Realizacja sieci neuronowej}
 \subsection{Opis skryptu}
 \section{Eksperymenty}
