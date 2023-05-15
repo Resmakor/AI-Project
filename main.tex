@@ -39,6 +39,20 @@ Dokładniejszy opis cech zestawu:
 \subsection{Przygotowanie danych}
 Sieć ma za zadanie sklasyfikować czy pacjent cierpi na chorobę Parkinsona. Wartość '1' oznacza osobę cierpiącą na chorobę Parkinsona, natomiast '0' oznacza osobę zdrową.
 Dane zostały uporządkowane i znormalizowane.
+Normalizacja została wykonana dla każdej obserwacji przy użyciu wzoru:
+\[
+    x_{\text{norm}} = \frac{{x_{\text{norm\_max}} - x_{\text{norm\_min}}}}{{x_{\text{max}} - x_{\text{min}}}} \cdot (x - x_{\text{min}}) + x_{\text{norm\_min}}
+\]
+
+gdzie:
+\begin{itemize}
+    \item $x_{min}$ - to wektor zawierający minimalne wartości dla każdej obserwacji.
+    \item $x_{max}$ - to wektor zawierający maksymalne wartości dla każdej obserwacji.
+    \item $x_{norm\_min}$ - to wartość minimalna po normalizacji (-1).
+    \item $x_{norm\_max}$ - to wartość maksymalna po normalizacji (1).
+    \item $x_{norm}$ - to macierz zawierająca znormalizowane dane.
+    \item $x$ - to macierz zawierająca dane wejściowe.
+\end{itemize}
 \section{Zagadnienia teoretyczne}
 \subsection{Wstęp do sieci neuronowych}
 
@@ -50,6 +64,8 @@ Jednakże do roku 2006 nie mieliśmy sposobu na efektywne szkolenie sieci neuron
 To, co zmieniło się w 2006 roku, to odkrycie technik uczenia w tzw. głębokich sieciach neuronowych, znane teraz jako głębokie uczenie.
 Od tego czasu, głębokie uczenie jest stale rozwijane i obecnie osiąga wybitne wyniki w wielu ważnych dziedzinach, takich jak widzenie komputerowe, rozpoznawanie mowy czy też przetwarzanie języka naturalnego.
 Są one szeroko wdrażane przez takie firmy jak Google, Microsoft i Facebook.
+
+
 \subsection{Historia sieci neuronowych}
 
 
@@ -104,8 +120,7 @@ Każdy pojedynczy neuron przyjmuje sygnały wejściowe, które są następnie pr
 Każde wejście ma przypisany współczynnik wagowy, który określa, jak bardzo wpływa ono na wynik neuronu.
 Dodatkowo, neuron posiada "bias", czyli wartość stałą, która jest taka sama dla wszystkich neuronów w danej warstwie.
 Wszystkie te informacje są sumowane, gdzie jest obliczane łączne pobudzenie neuronu.
-Następnie wartość pobudzenia przechodzi przez funkcję aktywacji, która określa sygnał wyjściowy neuronu.
-Wyjście neuronu jest zależne od tej relacji:
+Następnie wartość pobudzenia przechodzi przez funkcję aktywacji, która określa sygnał wyjściowy neuronu, który jest określony wzorem:
 \[
     y = \sum_{j=1}^{L} f(w_{j} x_{j} + b)
 \]
