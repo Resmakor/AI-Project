@@ -88,6 +88,7 @@ class Model(nn.Module):
         return x
 
 
+'''
 lr_vec = np.array([1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7])
 K1_vec = np.arange(1, 11, 2)
 K2_vec = K1_vec
@@ -130,7 +131,51 @@ for k1_ind in range(len(K1_vec)):
     if PK > PK_2D_K1K2_max:
         PK_2D_K1K2_max = PK
         k1_ind_max = k1_ind
-        k2_ind_max = k2_ind
+        k2_ind_max = k2_ind'''
+lr_vec = np.array([1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7])
+K1_vec = np.arange(1, 11, 2)
+K2_vec = K1_vec
+PK_2D_K1K2 = np.zeros([len(K1_vec), len(K2_vec)])
+max_epoch = 100
+PK_2D_K1K2_max = 0
+k1_ind_max = 0
+k2_ind_max = 0
+
+X_train = Variable(torch.from_numpy(X_train)).float()
+y_train = Variable(torch.from_numpy(y_train)).long()
+X_test = Variable(torch.from_numpy(X_test)).float()
+y_test = Variable(torch.from_numpy(y_test)).long()
+
+for k1_ind in range(len(K1_vec)):
+    for k2_ind in range(len(K2_vec)):
+        for lr in lr_vec:
+            model = Model(X_train.shape[1], int(
+                max(y) + 1), K1_vec[k1_ind], K2_vec[k2_ind])
+            optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+            loss_fn = nn.CrossEntropyLoss()
+
+            for epoch in range(max_epoch):
+                y_pred = model(X_train)
+                loss = loss_fn(y_pred, y_train)
+
+                # Zero gradients
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
+
+            with torch.no_grad():
+                y_pred = model(X_test)
+                correct = (torch.argmax(y_pred, dim=1) ==
+                           y_test).type(torch.FloatTensor)
+                PK = correct.mean().item() * 100
+                print("K1 {} | K2 {} | lr {} | PK {} ".format(
+                    K1_vec[k1_ind], K2_vec[k2_ind], lr, PK))
+                PK_2D_K1K2[k1_ind, k2_ind] = PK
+
+            if PK > PK_2D_K1K2_max:
+                PK_2D_K1K2_max = PK
+                k1_ind_max = k1_ind
+                k2_ind_max = k2_ind
 
 
 fig = plt.figure(figsize=(8, 8))
