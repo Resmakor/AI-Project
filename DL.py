@@ -1,5 +1,4 @@
 # 197 instancji, 23 cechy, 2 klasy (zdrowy 0, chory 1) dane nieuporządkowane, brak danych nieokreslonych, 24 kolumny z czego jedna odrzucamy calkiem (name)
-
 from torch.autograd import Variable
 import torch.nn as nn
 import torch.nn.functional as F
