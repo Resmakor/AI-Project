@@ -162,7 +162,7 @@ Propagacja w przód polega na przekazywaniu danych wejściowych przez sieć od w
 W każdej warstwie obliczane są aktywacje neuronów na podstawie obecnych wag i danych wejściowych.
 Wyniki z danej warstwy przekazywane są do kolejnej aż do warstwy wyjściowej gdzie generowany jest wynik predykcji.
 
-W propagacji wstecznej natomiast porównuje sie wynik sieci z oczekiwanym wynikiem, obliczając przy tym błąd.
+W propagacji wstecznej natomiast porównuje się wynik sieci z oczekiwanym wynikiem, obliczając przy tym błąd.
 Błąd ten jest następnie propagowany wstecz od zaczynając od warstwy wyjściowej.
 Obliczany jest gradient funkcji kosztu względem wag sieci, który informuje o kierunku dostosowania wag w celu minimalizacji błędu.
 Na podstawie gradientu aktualizowane są wagi sieci przy użyciu odpowiedniej metody optymalizacji, takiej jak metoda spadku gradientu czy też jej wariant, np. ADAM.
