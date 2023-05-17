@@ -89,7 +89,7 @@ class Model(nn.Module):
 
 # wyrzucic 2.1, 2.2
 
-'''
+
 lr_vec = np.array([1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7])
 K1_vec = np.arange(1, 11, 2)
 K2_vec = K1_vec
@@ -132,8 +132,8 @@ for k1_ind in range(len(K1_vec)):
     if PK > PK_2D_K1K2_max:
         PK_2D_K1K2_max = PK
         k1_ind_max = k1_ind
-        k2_ind_max = k2_ind'''
-lr_vec = np.array([1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7])
+        k2_ind_max = k2_ind
+'''lr_vec = np.array([1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7])
 K1_vec = np.arange(1, 11, 2)
 K2_vec = K1_vec
 PK_2D_K1K2 = np.zeros([len(K1_vec), len(K2_vec)])
@@ -189,4 +189,4 @@ ax.set_ylabel("K2")
 ax.set_zlabel("PK")
 
 ax.view_init(30, 200)
-plt.savefig("Fig.1_PK_K1K2_pytorch_parkinsons.png", bbox_inches="tight")
+plt.savefig("Fig.1_PK_K1K2_pytorch_parkinsons.png", bbox_inches="tight")'''

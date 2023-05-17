@@ -11,6 +11,7 @@
 \title{\textbf{Praca projektowa z przedmiotu Sztuczna Inteligencja}}
 \author{Bartłomiej Czajka 169522 2 EF-DI P1}
 \date{Rzeszów, 2023}
+\linespread{1.5}
 \begin{document}
 \maketitle
 \pagebreak
@@ -88,6 +89,31 @@ gdzie:
 \end{itemize}
 
 \subsection{Funkcja aktywacji}
+Sam model matematyczny neuronu nie byłby wystarczający do skomplikowanych obliczeń w m.in. sieciach głębokich.
+Należy wprowadzić funkcje aktywacji, które nadają sieciom neuronowym zdolność modelowania nieliniowych relacji między danymi wejściowymi, a wyjściowymi.
+Dzięki tej nieliniowej transformacji na wyjściu sztucznego neuronu, możliwe jest wprowadzenie nieliniowości i bardziej skomlipowanych obliczeń.
+Istnieje wiele funkcji aktywacji.
+
+Szczególnie przydatną w modelach głębokich ze względu na swoją prostotę i skuteczność jest funkcja ReLU, która została przeze mnie wykorzystana jako funkcja aktywacji dla warstw ukrytych.
+Działa na zasadzie przekazywania wartości dodatnich bez ich zmiany, natomiast dla wartości ujemnych przypisuje zerową wartość.
+Matematycznie można zdefiniować ją następującym wzorem:
+\[
+    f(x) = \max(0, x)
+\]
+Innymi słowy, funkcja ReLU jest zdefiniowana na przedziale:
+\[
+    f(x) = \begin{cases}
+        0, & \text{gdy } x \leq 0, \\
+        x, & \text{gdy } x > 0.
+    \end{cases}
+\]
+gdzie:
+\begin{itemize}
+    \item $x$ -- wartość wejściowa na której zostanie zastosowana funkcja aktywacji.
+\end{itemize}
+
+Istnieje również funkcja aktywacji softmax, która dla danego wektora wyników \( \mathbf{z} = (z_1, z_2, \ldots, z_n) \) gdzie \( n \) oznacza liczbę klas, funkcja softmax przekształca każdy element \( z_i \) na wartość prawdopodobieństwa \( p_i \).
+Funkcję softmax można zdefiniować w następujący sposób:
 
 
 \subsection{Sieć głęboka}
@@ -96,7 +122,12 @@ Każda warstwa wykonuje operacje na danych wejściowych, a następnie przekazuje
 
 Warstwa sieci głębokiej składa się z macierzy wag (w), wektora przesunięć (b), funkcji aktywacji (f) oraz wektora sygnałów na wyjściu warstwy (y).
 
-zdjecie innej sieci, bo ta nie byla gleboka
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth, keepaspectratio]{siec_gleboka.png}
+    \caption{Sieć głęboka [5]}
+    \label{fig:siec}
+\end{figure}
 
 
 
@@ -121,12 +152,16 @@ zdjecie innej sieci, bo ta nie byla gleboka
     \bibitem{vandeput}
     Nicolas Vandeput,
     \href{https://medium.com/analytics-vidhya/a-brief-history-of-neural-networks-c234639a43f1}{\emph{A Brief History Of Neural Networks}},
-    [dostęp: 15.05.2023].
+    [dostęp: 17.05.2023].
     \bibitem{zajdel}
     Zajdel R.,
     \emph{Ćwiczenie 4 Model Neuronu},
     Rzeszów,
     KIiA, PRz.
+    \bibitem{gora}
+    Paweł Gora,
+    \href{https://www.deltami.edu.pl/temat/informatyka/sztuczna_inteligencja/2017/12/28/Glebokie_uczenie_maszyn/}{\emph{Głębokie uczenie maszyn}},
+    [dostęp: 17.05.2023].
     \bibitem{zajdel}
     Zajdel R.,
     \emph{Procedura przygotowania danych dla sieci neuronowych na potrzeby projektu z modułu sztuczna inteligencja - Listing1},
