@@ -109,13 +109,34 @@ Innymi słowy, funkcja ReLU jest zdefiniowana na przedziale:
 \]
 gdzie:
 \begin{itemize}
-    \item $x$ -- wartość wejściowa na której zostanie zastosowana funkcja aktywacji.
+    \item $x$ -- wartość wejściowa, na której zostanie zastosowana funkcja aktywacji.
 \end{itemize}
 
 Istnieje również funkcja aktywacji softmax, która dla danego wektora wyników \( \mathbf{z} = (z_1, z_2, \ldots, z_n) \) gdzie \( n \) oznacza liczbę klas, funkcja softmax przekształca każdy element \( z_i \) na wartość prawdopodobieństwa \( p_i \).
 Funkcję softmax można zdefiniować w następujący sposób:
-
-
+\[
+    f(z)_i = \frac{e^{z_i}}{\sum_{j=1}^{n} e^{z_j}}
+\]
+gdzie:
+\begin{itemize}
+    \item \(f(z)_i\) -- \(i\)-ty element wyniku funkcji softmax dla wektora wyników \(\mathbf{z}\),
+    \item \(e^{z_i}\) -- funkcja wykładniczą podniesiona do potęgi \(z_i\),
+    \item \(z_i\) -- \(i\)-ty element wektora wyników,
+    \item \(\sum_{j=1}^{n} e^{z_j}\) -- suma funkcji wykładniczych dla wszystkich elementów wektora wyników,
+    \item \(n\) -- liczba klas.
+\end{itemize}
+Ostatnią funkcją aktywacji, którą wykorzystałem jest funkcja sigmoidalna, która tak jak softmax została użyta do aktywacji warstwy wyjściowej.
+Funkcja sigmoidalna przekształca wartość wejściową na wartość z zakresu (0, 1), co czyni ją przydatną w problemach klasyfikacji binarnej.
+Matematycznie funkcję sigmoidalną można zdefiniować jako:
+\[
+    f(x) = \frac{1}{1 + e^{-x}}
+\]
+gdzie:
+\begin{itemize}
+    \item \(x\) -- wartość wejściowa do funkcji sigmoidalnej.
+    \item \(e\) --  podstawa logarytmu naturalnego, przybliżone do wartości 2.71828.
+    \item \(f(x)\) -- to wartość wyjściowa funkcji sigmoidalnej, przekształcająca \(x\) na wartość z przedziału (0, 1).
+\end{itemize}
 \subsection{Sieć głęboka}
 Sieci głębokie to rodzaj modeli uczenia maszynowego, które składają się z wielu warstw neuronów, zwanych warstwami głębokimi.
 Każda warstwa wykonuje operacje na danych wejściowych, a następnie przekazuje wyniki do kolejnej warstwy, aż do warstwy wyjściowej, która generuje ostateczne predykcje lub wyniki.
