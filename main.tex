@@ -137,9 +137,6 @@ gdzie:
     \item \(e\) --  podstawa logarytmu naturalnego, przybliżone do wartości 2.71828.
     \item \(f(x)\) -- to wartość wyjściowa funkcji sigmoidalnej, przekształcająca \(x\) na wartość z przedziału (0, 1).
 \end{itemize}
-\subsection{Algorytm wstecznej propagacji błędu}
-Istotne przy obliczaniu gradientu funkcji kosztu względem wag sieci.
-
 \subsection{Sieć głęboka}
 Sieci głębokie to rodzaj modeli uczenia maszynowego, które składają się z wielu warstw neuronów, zwanych warstwami głębokimi.
 Pierwsza warstwa, zwana warstwą wejściową, przyjmuje dane wejściowe.
@@ -151,19 +148,28 @@ Finalnie, wyniki przekazywane są do warstwy wyjściowej, która generuje ostate
     \caption{Sieć głęboka [5]}
     \label{fig:siec}
 \end{figure}
-
-
 Proces uczenia takiej sieci polega na aktualizowaniu wagi neuronów w celu minimalizacji funkcji kosztu mierzącej błąd predykcji sieci.
-
 Zasada ich działania opiera się na propagacji informacji przez kolejne warstwy, nazywaną propagacją w przód (ang. forward propagation) oraz optymalizacji wag w procesie uczenia.
 
 
-Warstwa sieci głębokiej składa się z macierzy wag (w), wektora przesunięć (b), funkcji aktywacji (f) oraz wektora sygnałów na wyjściu warstwy (y).
+
+\subsection{Algorytm wstecznej propagacji błędu}
+Algorytm wstecznej propagacji błędu jest jednym z głównych algorytmów stosowanych w procesie uczenia sieci głębokich.
+Umożliwia on aktualizację wag sieci w celu minimalizacji funkcji kosztu poprzez iterację przez kolejne warstwy sieci.
+Proces ten można podzielić na dwa kroki: propagację w przód oraz wstecz.
+
+Propagacja w przód polega na przekazywaniu danych wejściowych przez sieć od warstwy wejściowej do warstwy wyjściowej.
+W każdej warstwie obliczane są aktywacje neuronów na podstawie obecnych wag i danych wejściowych.
+Wyniki z danej warstwy przekazywane są do kolejnej aż do warstwy wyjściowej gdzie generowany jest wynik predykcji.
+
+W propagacji wstecznej natomiast porównuje sie wynik sieci z oczekiwanym wynikiem, obliczając przy tym błąd.
+Błąd ten jest następnie propagowany wstecz od zaczynając od warstwy wyjściowej.
+Obliczany jest gradient funkcji kosztu względem wag sieci, który informuje o kierunku dostosowania wag w celu minimalizacji błędu.
+Na podstawie gradientu aktualizowane są wagi sieci przy użyciu odpowiedniej metody optymalizacji, takiej jak metoda spadku gradientu czy też jej wariant, np. ADAM.
 
 
 
-
-\subsection{Metoda ADAM}
+\subsection{Metoda optymalizacji ADAM}
 \section{Realizacja sieci neuronowej}
 \subsection{Opis skryptu}
 \section{Eksperymenty}
