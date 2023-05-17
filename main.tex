@@ -137,12 +137,14 @@ gdzie:
     \item \(e\) --  podstawa logarytmu naturalnego, przybliżone do wartości 2.71828.
     \item \(f(x)\) -- to wartość wyjściowa funkcji sigmoidalnej, przekształcająca \(x\) na wartość z przedziału (0, 1).
 \end{itemize}
+\subsection{Algorytm wstecznej propagacji błędu}
+Istotne przy obliczaniu gradientu funkcji kosztu względem wag sieci.
+
 \subsection{Sieć głęboka}
 Sieci głębokie to rodzaj modeli uczenia maszynowego, które składają się z wielu warstw neuronów, zwanych warstwami głębokimi.
-Każda warstwa wykonuje operacje na danych wejściowych, a następnie przekazuje wyniki do kolejnej warstwy, aż do warstwy wyjściowej, która generuje ostateczne predykcje lub wyniki.
-
-Warstwa sieci głębokiej składa się z macierzy wag (w), wektora przesunięć (b), funkcji aktywacji (f) oraz wektora sygnałów na wyjściu warstwy (y).
-
+Pierwsza warstwa, zwana warstwą wejściową, przyjmuje dane wejściowe.
+Następnie występują warstwy ukryte, które przetwarzają dane i wyodrębniają cechy.
+Finalnie, wyniki przekazywane są do warstwy wyjściowej, która generuje ostateczne predykcje.
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth, keepaspectratio]{siec_gleboka.png}
@@ -151,7 +153,17 @@ Warstwa sieci głębokiej składa się z macierzy wag (w), wektora przesunięć 
 \end{figure}
 
 
+Proces uczenia takiej sieci polega na aktualizowaniu wagi neuronów w celu minimalizacji funkcji kosztu mierzącej błąd predykcji sieci.
 
+Zasada ich działania opiera się na propagacji informacji przez kolejne warstwy, nazywaną propagacją w przód (ang. forward propagation) oraz optymalizacji wag w procesie uczenia.
+
+
+Warstwa sieci głębokiej składa się z macierzy wag (w), wektora przesunięć (b), funkcji aktywacji (f) oraz wektora sygnałów na wyjściu warstwy (y).
+
+
+
+
+\subsection{Metoda ADAM}
 \section{Realizacja sieci neuronowej}
 \subsection{Opis skryptu}
 \section{Eksperymenty}
