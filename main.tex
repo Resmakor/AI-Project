@@ -57,52 +57,6 @@ gdzie:
     \item $x$ - to macierz zawierająca dane wejściowe.
 \end{itemize}
 \section{Zagadnienia teoretyczne}
-\subsection{Wstęp do sieci neuronowych}
-
-Sieć neuronowa to jedno z najbardziej fascynujących paradygmatów programowania, jakie kiedykolwiek powstały.
-W tradycyjnym podejściu do programowania komputerowi nakazujemy, co ma zrobić, dzieląc duże problemy na wiele mniejszych, precyzyjnie określonych zadań, które komputer może łatwo zrealizować.
-W przypadku sieci neuronowych nie instruujemy komputera, jak ma rozwiązać nasz problem.
-Zamiast tego, sieć neuronowa uczy się na podstawie obserwacji danych, tworząc własne rozwiązanie dla danego problemu.
-Jednakże do roku 2006 nie mieliśmy sposobu na efektywne szkolenie sieci neuronowych, które przewyższałyby bardziej tradycyjne podejścia.
-To, co zmieniło się w 2006 roku, to odkrycie technik uczenia w tzw. głębokich sieciach neuronowych, znane teraz jako głębokie uczenie.
-Od tego czasu, głębokie uczenie jest stale rozwijane i obecnie osiąga wybitne wyniki w wielu ważnych dziedzinach, takich jak widzenie komputerowe, rozpoznawanie mowy czy też przetwarzanie języka naturalnego.
-Są one szeroko wdrażane przez takie firmy jak Google, Microsoft i Facebook. [1]
-
-
-\subsection{Historia sieci neuronowych}
-
-
-Historia sztucznych neuronów sięga lat 40. XX wieku, kiedy Warren McCulloch (neurobiolog) i Walter Pitts (logik) zaproponowali model pierwszego sztucznego neuronu.
-
-
-Zainspirowany publikacją Warrena McCullocha i Waltera Pittsa, Frank Rosenblatt pracował w latach 50. nad perceptronem, czyli pojedynczą warstwą neuronów zdolną do klasyfikacji obrazów o wielkości kilkuset pikseli.
-Można to uznać za pierwszego przodka współczesnych sieci neuronowych.
-Rosenblatt zainspirował się pracami kanadyjskiego psychologa Donalda Hebba, który w swojej książce Organization of Behavior z 1949 roku teoretyzował, że połączenia między neuronami (organicznymi) są wzmacniane w miarę ich używania (zostanie to potwierdzone dopiero w latach 60-tych).
-Pomysł Rosenblatta polegał na powieleniu tego za pomocą jego perceptronu.
-New York Times donosił, że Rosenblatt prorokował, iż perceptrony w przyszłości będą w stanie "rozpoznawać ludzi i wołać ich imiona", "błyskawicznie tłumaczyć mowę w jednym języku na mowę lub pismo w innym języku", "być wystrzeliwane na planety jako mechaniczni eksploratorzy kosmosu", ale także "reprodukować się" i być samoświadome.
-
-Niestety, ze względu na algorytm uczenia, perceptron był ograniczony do pojedynczej warstwy neuronów.
-Pomimo dużego zainteresowania tymi wczesnymi osiągnięciami, profesorowie MIT Marvin Minsky i Seymour Papert opublikowali w 1969 roku książkę (Perceptrons: An introduction to computational geometry) pokazującą, że perceptron miał ograniczone możliwości.
-Spowodowało to pierwszą "zimę sieci neuronowych" do połowy lat 80.
-
-Paul Werbos, w swojej pracy doktorskiej z 1974 roku, jako pierwszy zaproponował wykorzystanie propagacji wstecznej do optymalizacji sieci neuronowych.
-Jednak, jako że byliśmy w pierwszej zimie sieci neuronowych, jego praca przeszła niezauważona przez środowisko naukowe.
-Dopiero później, za sprawą pracy Rumelharta et al. (1986), propagacja wsteczna została spopularyzowana jako technika treningowa dla sieci neuronowych.
-W szczególności sieci neuronowe zostały wykorzystane do rozpoznawania pisma ręcznego na podstawie techniki zaproponowanej w 1989 roku przez Yanna LeCuna.
-Jego model został z powodzeniem zaimplementowany, kończąc na odczytywaniu cyfr napisanych ręcznie w około 10 do 20\% wszystkich czeków przetwarzanych w USA.
-Niemniej jednak wkrótce pojawił się nowy problem, powodujący, że uczenie stawało się powolne i niestabilne.
-W miarę jak sieci neuronowe stawały się coraz głębsze (z większą liczbą warstw), wsteczna propagacja stawała się wolniejsza (problem zanikającego gradientu).
-
-Na początku lat 2010, wiele badań zalecało użycie określonej funkcji aktywacji (ReLu) w neuronach do przekazywania informacji.
-To, wraz z lepszymi algorytmami optymalizacji (takimi jak ADAM), pomogło w efektywnym trenowaniu głębszych sieci neuronowych.
-
-W ostatnich latach dokonano znaczącego postępu w dziedzinie sztucznej inteligencji.
-Przykłady sztucznej inteligencji takie jak AlphaGo i GPT-3 wykazały zdolność do osiągania wyjątkowych wyników w dziedzinach gier planszowych i generowania tekstów.
-Jednak to tylko początek.
-W przyszłości możemy spodziewać się dalszego rozwoju sztucznej inteligencji, która będzie coraz bardziej zaawansowana i wszechstronna.
-Sztuczna inteligencja ma potencjał do rewolucjonizowania różnych dziedzin, takich jak medycyna, przemysł, transport czy badania naukowe.
-Jej zdolność do szybkiego uczenia się, analizowania ogromnych ilości danych i podejmowania złożonych decyzji otwiera nowe możliwości i perspektywy.
-
 \subsection{Matematyczny opis sztucznego neuronu}
 Podstawowym elementem budującym strukturę sieci neuronowej jest neuron. Jest to element, który przetwarza informacje.
 W pewnym, uproszczonym stopniu jest wzorowany na funkcjonowaniu biologicznej komórki nerwowej.
@@ -114,9 +68,6 @@ Jednym z najważniejszych składników neuronu są wagi, których wartości decy
     \caption{Model neuronu [4]}
     \label{fig:zdjecie}
 \end{figure}
-
-
-
 
 Każdy pojedynczy neuron przyjmuje sygnały wejściowe, które są następnie przetwarzane.
 Każde wejście ma przypisany współczynnik wagowy, który określa jak bardzo wpływa ono na wynik neuronu.
@@ -144,12 +95,8 @@ Sieci głębokie to rodzaj modeli uczenia maszynowego, które składają się z 
 Każda warstwa wykonuje operacje na danych wejściowych, a następnie przekazuje wyniki do kolejnej warstwy, aż do warstwy wyjściowej, która generuje ostateczne predykcje lub wyniki.
 
 Warstwa sieci głębokiej składa się z macierzy wag (w), wektora przesunięć (b), funkcji aktywacji (f) oraz wektora sygnałów na wyjściu warstwy (y).
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth, keepaspectratio]{siec_wielowarstwowa.png}
-    \caption{Sieć wielowarstwowa jednokierunkowa [4]}
-    \label{fig:siec}
-\end{figure}
+
+zdjecie innej sieci, bo ta nie byla gleboka
 
 
 
