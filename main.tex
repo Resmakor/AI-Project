@@ -151,6 +151,33 @@ Finalnie, wyniki przekazywane są do warstwy wyjściowej, która generuje ostate
 Proces uczenia takiej sieci polega na aktualizowaniu wagi neuronów w celu minimalizacji funkcji kosztu mierzącej błąd predykcji sieci.
 Zasada ich działania opiera się na propagacji informacji przez kolejne warstwy, nazywaną propagacją w przód (ang. forward propagation) oraz optymalizacji wag w procesie uczenia.
 
+\subsection{Funkcja kosztu}
+Wykorzystaną funkcją kosztu w kodzie jest entropia krzyżowa.
+Funkcja ta mierzy stopień niezgodności między rzeczywistymi etykietami a przewidywanymi prawdopodobieństwami dla każdej klasy.
+Im większa niezgodność, tym większa wartość funkcji kosztu.
+Dąży się do minimalizacji funkcji kosztu, poprzez zmianę wag sieci aby osiągnąć lepsze wyniki uczenia.
+Entropię krzyżową można zdefiniować następującym wzorem:
+\[J(\theta)  = -\frac{1}{N} \sum_{i=1}^{N} \sum_{k=1}^{K} y_{i,k} \log(p_{i,k}) = -\frac{1}{N}\sum_{i=1}^{N} \left(y_i \log(p_i) + (1-y_i) \log(1-p_i)\right)\]
+gdzie:
+\begin{itemize}
+    \item \(N\) -- liczba próbek w zbiorze treningowym,
+    \item \(\theta\) -- parametry sieci, które chcemy uczyć,
+    \item \(K\) -- liczba klas,
+    \item \(y_{i,k}\) -- wartość etykiety dla próbki \(i\) i klasy \(k\) (0 lub 1),
+    \item \(p_{i,k}\) -- przewidywane prawdopodobieństwo dla próbki \(i\) i klasy \(k\).
+\end{itemize}
+
+Aby obliczyć gradient funkcji kosztu, można użyć propagacji wstecznej błędu.
+
+\[\frac{\partial J}{\partial z_i} = p_i - y_i\]
+
+\begin{itemize}
+    \item \(\frac{\partial J}{\partial z_i}\) to gradient funkcji kosztu względem wejścia \(z_i\) do funkcji aktywacji (np. softmax) w warstwie wyjściowej,
+    \item \(p_i\) to przewidywane prawdopodobieństwo dla próbki \(i\),
+    \item \(y_i\) to prawdziwa etykieta (0 lub 1) dla próbki \(i\).
+\end{itemize}
+Następnie ten gradient jest propagowany wstecz przez warstwy ukryte, aż do warstwy wejściowej, gdzie obliczane są gradienty względem wag sieci.
+W praktyce, algorytm propagacji wstecznej błędu jest stosowany do obliczenia gradientów dla wszystkich parametrów sieci, a następnie te gradienty są wykorzystywane w procesie optymalizacji, na przykład przy użyciu algorytmu ADAM, aby dostosować wagi sieci i minimalizować funkcję kosztu.
 
 
 \subsection{Algorytm wstecznej propagacji błędu}
@@ -166,10 +193,45 @@ W propagacji wstecznej natomiast porównuje się wynik sieci z oczekiwanym wynik
 Błąd ten jest następnie propagowany wstecz od zaczynając od warstwy wyjściowej.
 Obliczany jest gradient funkcji kosztu względem wag sieci, który informuje o kierunku dostosowania wag w celu minimalizacji błędu.
 Na podstawie gradientu aktualizowane są wagi sieci przy użyciu odpowiedniej metody optymalizacji, takiej jak metoda spadku gradientu czy też jej wariant, np. ADAM.
-
-
-
 \subsection{Metoda optymalizacji ADAM}
+Metoda ADAM jest popularna w optymalizacji sieci głębokich, ponieważ łączy zalety adaptacyjnego skalowania kroku uczenia (RMSProp) i momentu, co prowadzi do efektywniejszej optymalizacji i szybszego zbiegania do optymalnych wag sieci.
+
+Wzór na gradient funkcji kosztu w metodzie ADAM można zapisać następująco:
+
+\[g_t = \nabla_{\theta} J(\theta)\]
+gdzie:
+\begin{itemize}
+    \item \(g_t\) to gradient w kroku czasowym \(t\),
+    \item \(\nabla_{\theta}\) oznacza gradient po wagach \(\theta\),
+    \item \(J(\theta)\) to funkcja kosztu.
+\end{itemize}
+Gradient jest obliczany za pomocą standardowych metod propagacji wstecznej błędu w sieciach neuronowych.
+\begin{enumerate}
+    \item Obliczenie gradientów funkcji kosztu względem wag sieci za pomocą propagacji wstecznej błędu.
+    \item Aktualizacja momentu gradientu \(m_t\) i drugiego momentu gradientu \(v_t\) na podstawie obliczonych gradientów.
+    \item Obliczenie wygładzonych estymacji momentu i drugiego momentu: \(\hat{m}_t\) i \(\hat{v}_t\).
+    \item Aktualizacja wag sieci z wykorzystaniem estymacji momentu i drugiego momentu, współczynnika uczenia \(\alpha\) oraz małej wartości epsilon \(\epsilon\).
+\end{enumerate}
+
+W metodzie ADAM, gradient jest używany do aktualizacji wag zgodnie z następującymi wzorami:
+\[m_t = \beta_1 \cdot m_{t-1} + (1 - \beta_1) \cdot g_t\]
+\[v_t = \beta_2 \cdot v_{t-1} + (1 - \beta_2) \cdot g_t^2\]
+\[\hat{m}_t = \frac{m_t}{1 - \beta_1^t}\]
+\[\hat{v}_t = \frac{v_t}{1 - \beta_2^t}\]
+\[\theta_{t+1} = \theta_t - \alpha \cdot \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon}\]
+
+gdzie:
+\begin{itemize}
+    \item \(m_t\) to estymacja momentu gradientu w kroku czasowym \(t\).
+    \item \(v_t\) to estymacja drugiego momentu gradientu w kroku czasowym \(t\).
+    \item \(\beta_1\) i \(\beta_2\) to współczynniki z zakresu \([0, 1)\) kontrolujące eksponencjalne wygładzanie momentu i drugiego momentu.
+    \item \(\alpha\) to współczynnik uczenia (learning rate).
+    \item \(\epsilon\) to mała wartość (np. \(10^{-8}\)) używana w celu uniknięcia dzielenia przez zero.
+    \item \(\hat{m}_t\) i \(\hat{v}_t\) to wygładzone estymacje momentu i drugiego momentu.
+    \item \(\theta_t\) i \(\theta_{t+1}\) to wagi w krokach czasowych \(t\) i \(t+1\) odpowiednio.
+\end{itemize}
+Przy użyciu tych równań, algorytm ADAM aktualizuje wagi sieci neuronowej, wykorzystując estymację momentu i drugiego momentu gradientu.
+To pozwala na efektywną optymalizację sieci głębokiej, dostosowując krok uczenia (learning rate) dla każdej wagi indywidualnie.
 \section{Realizacja sieci neuronowej}
 \subsection{Opis skryptu}
 \section{Eksperymenty}
