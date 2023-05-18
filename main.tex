@@ -143,7 +143,7 @@ gdzie:
 \subsection{Sieć głęboka}
 Sieci głębokie to rodzaj modeli uczenia maszynowego, które składają się z wielu warstw neuronów, zwanych warstwami głębokimi.
 Uczenie sieci głębokich opiera się na zasadzie propagacji wstecznej, która jest jednym z kluczowych algorytmów używanych do dostosowania wag sieci neuronowej w procesie uczenia.
-Propagacja wsteczna umożliwia obliczenie gradientów wag sieci na podstawie funkcji celu i propaguje te gradienty wstecz przez sieć, aby zaktualizować wagi w celu minimalizacji błędu.
+Propagacja wsteczna umożliwia obliczenie gradientów wag sieci na podstawie funkcji kosztu i propaguje te gradienty wstecz przez sieć, aby zaktualizować wagi w celu minimalizacji błędu.
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth, keepaspectratio]{siec_gleboka.png}
@@ -168,9 +168,13 @@ Im większa niezgodność, tym większa wartość funkcji kosztu.
 Dąży się do minimalizacji tej funkcji, poprzez zmianę wag sieci.
 
 Entropię krzyżową, w szczególności dla klasyfikacji binarnej, można zdefiniować następującym wzorem:
-\[
-    H(y, p) = -\sum_{i=1}^{C} y_i \log(p_i) = -\sum_{i=1}^{2} y_i \log(p_i) = -[y_1 \log(p_1) + y_2 \log(p_2)] = - [y \log(p) + (1-y) \log(1-p)]
-\]
+\begin{align*}
+    H(y, p) & = -\sum_{i=1}^{C} y_i \log(p_i) =    \\
+            & = -\sum_{i=1}^{2} y_i \log(p_i) =    \\
+            & = -[y_1 \log(p_1) + y_2 \log(p_2)] = \\
+            & = - [y \log(p) + (1-y) \log(1-p)]
+\end{align*}
+
 gdzie:
 \begin{itemize}
     \item  \(H(y, p)\) -- wartość entropii krzyżowej,
@@ -179,15 +183,6 @@ gdzie:
     \item \(C\) -- liczba klas.
 \end{itemize}
 
-Aby obliczyć gradient funkcji kosztu, można użyć propagacji wstecznej błędu.
-
-\[\frac{\partial H}{\partial z_i} = p_i - y_i\]
-
-\begin{itemize}
-    \item \(\frac{\partial H}{\partial z_i}\) to gradient funkcji kosztu względem wejścia \(z_i\) do funkcji aktywacji (np. softmax) w warstwie wyjściowej,
-    \item \(p_i\) to przewidywane prawdopodobieństwo dla próbki \(i\),
-    \item \(y_i\) to rzeczywista etykieta (0 lub 1) dla próbki \(i\).
-\end{itemize}
 Następnie ten gradient jest propagowany wstecz przez warstwy ukryte, aż do warstwy wejściowej, gdzie obliczane są gradienty względem wag sieci.
 W praktyce, algorytm propagacji wstecznej błędu jest stosowany do obliczenia gradientów dla wszystkich parametrów sieci, a następnie te gradienty są wykorzystywane w procesie optymalizacji, na przykład przy użyciu algorytmu ADAM, aby dostosować wagi sieci i minimalizować funkcję kosztu.
 
@@ -205,19 +200,21 @@ W propagacji wstecznej natomiast porównuje się wynik sieci z oczekiwanym wynik
 Błąd ten jest następnie propagowany wstecz od zaczynając od warstwy wyjściowej.
 Obliczany jest gradient funkcji kosztu względem wag sieci, który informuje o kierunku dostosowania wag w celu minimalizacji błędu.
 Na podstawie gradientu aktualizowane są wagi sieci przy użyciu odpowiedniej metody optymalizacji, takiej jak metoda spadku gradientu czy też jej wariant, np. ADAM.
+
 \subsection{Metoda optymalizacji ADAM}
 Metoda ADAM jest popularna w optymalizacji sieci głębokich, ponieważ łączy zalety adaptacyjnego skalowania kroku uczenia (RMSProp) i momentu, co prowadzi do efektywniejszej optymalizacji i szybszego zbiegania do optymalnych wag sieci.
+Aby obliczyć ten gradient funkcji kosztu, należy obliczyć pochodne cząstkowe dla każdej warstwy, od ostatniej warstwy do pierwszej.
+W każdej warstwie oblicza się lokalny gradient na podstawie pochodnej funkcji aktywacji oraz gradientu z poprzedniej warstwy.
 
-Wzór na gradient funkcji kosztu w metodzie ADAM można zapisać następująco:
-
-\[g_t = \nabla_{\theta} J(\theta)\]
+Wzór na gradient funkcji kosztu H, w kroku t:
+\[ g_t = \frac{\partial H}{\partial W} \]
 gdzie:
 \begin{itemize}
-    \item \(g_t\) to gradient w kroku czasowym \(t\),
-    \item \(\nabla_{\theta}\) oznacza gradient po wagach \(\theta\),
-    \item \(J(\theta)\) to funkcja kosztu.
+    \item \( H\) -- funkcja kosztu,
+    \item \(W\) -- macierz wag sieci neuronowej.
 \end{itemize}
-Gradient jest obliczany za pomocą standardowych metod propagacji wstecznej błędu w sieciach neuronowych.
+
+Algorytm ADAM składa się z następujących kroków:
 \begin{enumerate}
     \item Obliczenie gradientów funkcji kosztu względem wag sieci za pomocą propagacji wstecznej błędu.
     \item Aktualizacja momentu gradientu \(m_t\) i drugiego momentu gradientu \(v_t\) na podstawie obliczonych gradientów.
@@ -230,8 +227,7 @@ W metodzie ADAM, gradient jest używany do aktualizacji wag zgodnie z następuj�
 \[v_t = \beta_2 \cdot v_{t-1} + (1 - \beta_2) \cdot g_t^2\]
 \[\hat{m}_t = \frac{m_t}{1 - \beta_1^t}\]
 \[\hat{v}_t = \frac{v_t}{1 - \beta_2^t}\]
-\[\theta_{t+1} = \theta_t - \alpha \cdot \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon}\]
-
+\[ W_{t+1} = W_t - \frac{\eta}{\sqrt{\hat{v}_t} + \epsilon} \cdot \hat{m}_t \]
 gdzie:
 \begin{itemize}
     \item \(m_t\) to estymacja momentu gradientu w kroku czasowym \(t\).
@@ -240,7 +236,7 @@ gdzie:
     \item \(\alpha\) to współczynnik uczenia (learning rate).
     \item \(\epsilon\) to mała wartość (np. \(10^{-8}\)) używana w celu uniknięcia dzielenia przez zero.
     \item \(\hat{m}_t\) i \(\hat{v}_t\) to wygładzone estymacje momentu i drugiego momentu.
-    \item \(\theta_t\) i \(\theta_{t+1}\) to wagi w krokach czasowych \(t\) i \(t+1\) odpowiednio.
+    \item \(W_{t}\) i \(W_{t+1}\) to wagi w krokach czasowych \(t\) i \(t+1\).
 \end{itemize}
 Przy użyciu tych równań, algorytm ADAM aktualizuje wagi sieci neuronowej, wykorzystując estymację momentu i drugiego momentu gradientu.
 To pozwala na efektywną optymalizację sieci głębokiej, dostosowując krok uczenia (learning rate) dla każdej wagi indywidualnie.
