@@ -183,10 +183,6 @@ gdzie:
     \item \(C\) -- liczba klas.
 \end{itemize}
 
-Następnie ten gradient jest propagowany wstecz przez warstwy ukryte, aż do warstwy wejściowej, gdzie obliczane są gradienty względem wag sieci.
-W praktyce, algorytm propagacji wstecznej błędu jest stosowany do obliczenia gradientów dla wszystkich parametrów sieci, a następnie te gradienty są wykorzystywane w procesie optymalizacji, na przykład przy użyciu algorytmu ADAM, aby dostosować wagi sieci i minimalizować funkcję kosztu.
-
-
 \subsection{Algorytm wstecznej propagacji błędu}
 Algorytm wstecznej propagacji błędu, nazywany również algorytmem największego spadku gradientu, jest jednym z głównych algorytmów stosowanych w procesie uczenia sieci głębokich.
 Umożliwia on aktualizację wag sieci w celu minimalizacji funkcji kosztu poprzez iterację przez kolejne warstwy sieci.
@@ -203,8 +199,9 @@ Na podstawie gradientu aktualizowane są wagi sieci przy użyciu odpowiedniej me
 
 \subsection{Metoda optymalizacji ADAM}
 Metoda ADAM jest popularna w optymalizacji sieci głębokich, ponieważ łączy zalety adaptacyjnego skalowania kroku uczenia (RMSProp) i momentu, co prowadzi do efektywniejszej optymalizacji i szybszego zbiegania do optymalnych wag sieci.
-Aby obliczyć ten gradient funkcji kosztu, należy obliczyć pochodne cząstkowe dla każdej warstwy, od ostatniej warstwy do pierwszej.
-W każdej warstwie oblicza się lokalny gradient na podstawie pochodnej funkcji aktywacji oraz gradientu z poprzedniej warstwy.
+
+Aby obliczyć gradient funkcji kosztu, należy obliczyć pochodne cząstkowe dla każdej warstwy, od ostatniej warstwy do pierwszej.
+W każdej warstwie oblicza się lokalny gradient na podstawie pochodnej funkcji kosztu oraz gradientu z poprzedniej warstwy.
 
 Wzór na gradient funkcji kosztu H, w kroku t:
 \[ g_t = \frac{\partial H}{\partial W} \]
@@ -222,7 +219,7 @@ Algorytm ADAM składa się z następujących kroków:
     \item Aktualizacja wag sieci z wykorzystaniem estymacji momentu i drugiego momentu, współczynnika uczenia \(\alpha\) oraz małej wartości epsilon \(\epsilon\).
 \end{enumerate}
 
-W metodzie ADAM, gradient jest używany do aktualizacji wag zgodnie z następującymi wzorami:
+Gradient jest używany do aktualizacji wag zgodnie z następującymi wzorami:
 \[m_t = \beta_1 \cdot m_{t-1} + (1 - \beta_1) \cdot g_t\]
 \[v_t = \beta_2 \cdot v_{t-1} + (1 - \beta_2) \cdot g_t^2\]
 \[\hat{m}_t = \frac{m_t}{1 - \beta_1^t}\]
@@ -238,7 +235,7 @@ gdzie:
     \item \(\hat{m}_t\) i \(\hat{v}_t\) to wygładzone estymacje momentu i drugiego momentu.
     \item \(W_{t}\) i \(W_{t+1}\) to wagi w krokach czasowych \(t\) i \(t+1\).
 \end{itemize}
-Przy użyciu tych równań, algorytm ADAM aktualizuje wagi sieci neuronowej, wykorzystując estymację momentu i drugiego momentu gradientu.
+Przy użyciu tych wzorów, w metodzie optymalizacji ADAM aktualizuje się wagi sieci neuronowej, wykorzystując estymację momentu i drugiego momentu gradientu.
 To pozwala na efektywną optymalizację sieci głębokiej, dostosowując krok uczenia (learning rate) dla każdej wagi indywidualnie.
 \section{Realizacja sieci neuronowej}
 \subsection{Opis skryptu}
