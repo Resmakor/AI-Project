@@ -72,9 +72,11 @@ Jednym z najważniejszych składników neuronu są wagi, których wartości decy
 
 Każdy pojedynczy neuron przyjmuje sygnały wejściowe, które są następnie przetwarzane.
 Każde wejście ma przypisany współczynnik wagowy, który określa jak bardzo wpływa ono na wynik neuronu.
-Dodatkowo, neuron posiada "bias", czyli dodatkowe wejście, na którym występuje stała wartość.
-Wszystkie te informacje są sumowane, gdzie jest obliczane łączne pobudzenie neuronu.
-Następnie wartość pobudzenia przechodzi przez funkcję aktywacji, która określa sygnał wyjściowy neuronu dany wzorem:
+Ponadto, neuron posiada "bias", czyli dodatkowe wejście, na którym występuje stała wartość.
+Wszystkie te informacje są sumowane, aby obliczyć łączne pobudzenie neuronu.
+Następnie wartość pobudzenia przechodzi przez funkcję aktywacji, która określa sygnał wyjściowy neuronu.
+
+Wzór na łączne pobudzenie neuronu:
 \[
     y = \sum_{j=1}^{L} f(w_{j} x_{j} + b)
 \]
@@ -91,9 +93,9 @@ gdzie:
 \subsection{Funkcja aktywacji}
 Sam model matematyczny neuronu nie byłby wystarczający do skomplikowanych obliczeń w m.in. sieciach głębokich.
 Należy wprowadzić funkcje aktywacji, które nadają sieciom neuronowym zdolność modelowania nieliniowych relacji między danymi wejściowymi, a wyjściowymi.
-Dzięki tej nieliniowej transformacji na wyjściu sztucznego neuronu, możliwe jest wprowadzenie nieliniowości i bardziej skomlipowanych obliczeń.
-Istnieje wiele funkcji aktywacji.
+Dzięki tej nieliniowej transformacji na wyjściu sztucznego neuronu, możliwe jest wprowadzenie nieliniowości i bardziej skomplikowanych obliczeń.
 
+Istnieje wiele funkcji aktywacji.
 Szczególnie przydatną w modelach głębokich ze względu na swoją prostotę i skuteczność jest funkcja ReLU, która została przeze mnie wykorzystana jako funkcja aktywacji dla warstw ukrytych.
 Działa na zasadzie przekazywania wartości dodatnich bez ich zmiany, natomiast dla wartości ujemnych przypisuje zerową wartość.
 Matematycznie można zdefiniować ją następującym wzorem:
@@ -112,7 +114,7 @@ gdzie:
     \item $x$ -- wartość wejściowa, na której zostanie zastosowana funkcja aktywacji.
 \end{itemize}
 
-Istnieje również funkcja aktywacji softmax, która dla danego wektora wyników \( \mathbf{z} = (z_1, z_2, \ldots, z_n) \) gdzie \( n \) oznacza liczbę klas, funkcja softmax przekształca każdy element \( z_i \) na wartość prawdopodobieństwa \( p_i \).
+Istnieje również funkcja aktywacji softmax, która dla danego wektora wyników \( \mathbf{z} = (z_1, z_2, \ldots, z_n) \), gdzie \( n \) oznacza liczbę klas, przekształca każdy element \( z_i \) na wartość prawdopodobieństwa \( p_i \).
 Funkcję softmax można zdefiniować w następujący sposób:
 \[
     f(z)_i = \frac{e^{z_i}}{\sum_{j=1}^{n} e^{z_j}}
@@ -125,7 +127,8 @@ gdzie:
     \item \(\sum_{j=1}^{n} e^{z_j}\) -- suma funkcji wykładniczych dla wszystkich elementów wektora wyników,
     \item \(n\) -- liczba klas.
 \end{itemize}
-Ostatnią funkcją aktywacji, którą wykorzystałem jest funkcja sigmoidalna, która tak jak softmax została użyta do aktywacji warstwy wyjściowej.
+Ostatnią funkcją aktywacji, którą wykorzystałem, jest funkcja sigmoidalna.
+Analogicznie do funkcji softmax, została użyta do aktywacji warstwy wyjściowej.
 Funkcja sigmoidalna przekształca wartość wejściową na wartość z zakresu (0, 1), co czyni ją przydatną w problemach klasyfikacji binarnej.
 Matematycznie funkcję sigmoidalną można zdefiniować jako:
 \[
@@ -133,48 +136,57 @@ Matematycznie funkcję sigmoidalną można zdefiniować jako:
 \]
 gdzie:
 \begin{itemize}
-    \item \(x\) -- wartość wejściowa do funkcji sigmoidalnej.
-    \item \(e\) --  podstawa logarytmu naturalnego, przybliżone do wartości 2.71828.
+    \item \(x\) -- wartość wejściowa do funkcji sigmoidalnej,
+    \item \(e\) --  podstawa logarytmu naturalnego, przybliżone do wartości 2.71828,
     \item \(f(x)\) -- to wartość wyjściowa funkcji sigmoidalnej, przekształcająca \(x\) na wartość z przedziału (0, 1).
 \end{itemize}
 \subsection{Sieć głęboka}
 Sieci głębokie to rodzaj modeli uczenia maszynowego, które składają się z wielu warstw neuronów, zwanych warstwami głębokimi.
-Pierwsza warstwa, zwana warstwą wejściową, przyjmuje dane wejściowe.
-Następnie występują warstwy ukryte, które przetwarzają dane i wyodrębniają cechy.
-Finalnie, wyniki przekazywane są do warstwy wyjściowej, która generuje ostateczne predykcje.
+Uczenie sieci głębokich opiera się na zasadzie propagacji wstecznej, która jest jednym z kluczowych algorytmów używanych do dostosowania wag sieci neuronowej w procesie uczenia.
+Propagacja wsteczna umożliwia obliczenie gradientów wag sieci na podstawie funkcji celu i propaguje te gradienty wstecz przez sieć, aby zaktualizować wagi w celu minimalizacji błędu.
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth, keepaspectratio]{siec_gleboka.png}
     \caption{Sieć głęboka [5]}
     \label{fig:siec}
 \end{figure}
-Proces uczenia takiej sieci polega na aktualizowaniu wagi neuronów w celu minimalizacji funkcji kosztu mierzącej błąd predykcji sieci.
-Zasada ich działania opiera się na propagacji informacji przez kolejne warstwy, nazywaną propagacją w przód (ang. forward propagation) oraz optymalizacji wag w procesie uczenia.
 
+
+Proces uczenia sieci głębokich rozpoczyna się od inicjalizacji wag, które mogą być inicjalizowane losowo lub przy użyciu innych metod.
+Następnie dane wejściowe są przekazywane od warstwy wejściowej do warstwy wyjściowej (ang. forward propagation).
+Każda warstwa na podstawie wag i funkcji aktywacji oblicza swoje wyjście.
+Na podstawie wyników obliczana jest wartość funkcji kosztu, która mierzy błąd przewidywań sieci.
+Kolejnym krokiem jest wykorzystanie algorytmu propagacji wstecznej, który oblicza gradienty wag sieci neuronowej.
+Gradienty oblicza się iteracyjnie, zaczynając od warstwy wyjściowej przechodząc wstecz przez kolejne warstwy sieci.
+W dalszej kolejności, biorąc pod uwagę obliczone gradienty wag, wagi sieci są aktualizowane w celu zminimalizowania funkcji kosztu mierzącej błąd predykcji sieci.
+Dokonuje się tego za pomocą optymalizatora (np. ADAM).
+Wyżej wymienione kroki powtarza się aż do osiągnięcia zdefiniowanej liczby epok lub innych kryteriów zatrzymania.
 \subsection{Funkcja kosztu}
-Wykorzystaną funkcją kosztu w kodzie jest entropia krzyżowa.
-Funkcja ta mierzy stopień niezgodności między rzeczywistymi etykietami a przewidywanymi prawdopodobieństwami dla każdej klasy.
+Wykorzystaną funkcją kosztu w programie jest entropia krzyżowa.
+Funkcja ta mierzy stopień niezgodności między rzeczywistymi etykietami, a przewidywanymi prawdopodobieństwami dla każdej klasy.
 Im większa niezgodność, tym większa wartość funkcji kosztu.
-Dąży się do minimalizacji funkcji kosztu, poprzez zmianę wag sieci aby osiągnąć lepsze wyniki uczenia.
-Entropię krzyżową można zdefiniować następującym wzorem:
-\[J(\theta)  = -\frac{1}{N} \sum_{i=1}^{N} \sum_{k=1}^{K} y_{i,k} \log(p_{i,k}) = -\frac{1}{N}\sum_{i=1}^{N} \left(y_i \log(p_i) + (1-y_i) \log(1-p_i)\right)\]
+Dąży się do minimalizacji tej funkcji, poprzez zmianę wag sieci.
+
+Entropię krzyżową, w szczególności dla klasyfikacji binarnej, można zdefiniować następującym wzorem:
+\[
+    H(y, p) = -\sum_{i=1}^{C} y_i \log(p_i) = -\sum_{i=1}^{2} y_i \log(p_i) = -[y_1 \log(p_1) + y_2 \log(p_2)] = - [y \log(p) + (1-y) \log(1-p)]
+\]
 gdzie:
 \begin{itemize}
-    \item \(N\) -- liczba próbek w zbiorze treningowym,
-    \item \(\theta\) -- parametry sieci, które chcemy uczyć,
-    \item \(K\) -- liczba klas,
-    \item \(y_{i,k}\) -- wartość etykiety dla próbki \(i\) i klasy \(k\) (0 lub 1),
-    \item \(p_{i,k}\) -- przewidywane prawdopodobieństwo dla próbki \(i\) i klasy \(k\).
+    \item  \(H(y, p)\) -- wartość entropii krzyżowej,
+    \item  \(y_i\) -- \(i\)-ta rzeczywista etykieta (0 lub 1) dla próbki i,
+    \item  \(p_i\) -- \(i\)-te przewidziane prawdopodobieństwo dla próbki i,
+    \item \(C\) -- liczba klas.
 \end{itemize}
 
 Aby obliczyć gradient funkcji kosztu, można użyć propagacji wstecznej błędu.
 
-\[\frac{\partial J}{\partial z_i} = p_i - y_i\]
+\[\frac{\partial H}{\partial z_i} = p_i - y_i\]
 
 \begin{itemize}
-    \item \(\frac{\partial J}{\partial z_i}\) to gradient funkcji kosztu względem wejścia \(z_i\) do funkcji aktywacji (np. softmax) w warstwie wyjściowej,
+    \item \(\frac{\partial H}{\partial z_i}\) to gradient funkcji kosztu względem wejścia \(z_i\) do funkcji aktywacji (np. softmax) w warstwie wyjściowej,
     \item \(p_i\) to przewidywane prawdopodobieństwo dla próbki \(i\),
-    \item \(y_i\) to prawdziwa etykieta (0 lub 1) dla próbki \(i\).
+    \item \(y_i\) to rzeczywista etykieta (0 lub 1) dla próbki \(i\).
 \end{itemize}
 Następnie ten gradient jest propagowany wstecz przez warstwy ukryte, aż do warstwy wejściowej, gdzie obliczane są gradienty względem wag sieci.
 W praktyce, algorytm propagacji wstecznej błędu jest stosowany do obliczenia gradientów dla wszystkich parametrów sieci, a następnie te gradienty są wykorzystywane w procesie optymalizacji, na przykład przy użyciu algorytmu ADAM, aby dostosować wagi sieci i minimalizować funkcję kosztu.
