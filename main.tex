@@ -7,7 +7,7 @@
 \usepackage{float}
 \usepackage{amsmath}
 \usepackage{indentfirst}
-
+\usepackage{pythonhighlight}
 \title{\textbf{Praca projektowa z przedmiotu Sztuczna Inteligencja}}
 \author{Bartłomiej Czajka 169522 2 EF-DI P1}
 \date{Rzeszów, 2023}
@@ -239,8 +239,178 @@ Przy użyciu tych wzorów, w metodzie optymalizacji ADAM aktualizuje się wagi s
 To pozwala na efektywną optymalizację sieci głębokiej, dostosowując krok uczenia (learning rate) dla każdej wagi indywidualnie.
 \section{Realizacja sieci neuronowej}
 \subsection{Opis skryptu}
+Skrypt został podzielony na kilka innych.
+Każdy ze skryptów dotyczy poprawności klasyfikacji w zależności od różnych parametrów.
+W każdym ze skryptów występuje ta sama początkowa część, która zawiera przetwarzanie danych zawartych w pliku "parkinsons.txt", normalizuje je, sortuje i zapisuje przetworzone dane do pliku "parkinsons.hkl".
+Następnie dane wejściowe są skalonwane i dzielone na zbiór treningowy i testowy.
+Wektory "y" są przekształcane tak, aby indeks pierwszej klasy wynosił 0.
+Dalsza część skryptu różni się dla poszczególnych wersji.
+\subsection{Początek każdego ze skryptów}
+\begin{python}
+    from torch.autograd import Variable
+    import torch.nn as nn
+    import torch.nn.functional as F
+    import torch
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import hickle as hkl
+    from sklearn.model_selection import train_test_split
+    from sklearn.preprocessing import StandardScaler
+
+    """Data preparation with manual deletion of the first line (feature names)"""
+    filename = "parkinsons.txt"
+    data = np.loadtxt(filename, delimiter=",", dtype=str)
+    x = np.concatenate((data[:, 1:17], data[:, 18:]), axis=1).astype(float).T
+    y_t = data[:, 17].astype(float)
+    y_t = y_t.reshape(1, y_t.shape[0])
+    np.transpose([np.array(range(x.shape[0])), x.min(axis=1), x.max(axis=1)])
+
+    # Normalization
+    x_min = x.min(axis=1)
+    x_max = x.max(axis=1)
+    x_norm_max = 1
+    x_norm_min = -1
+    x_norm = np.zeros(x.shape)
+    for i in range(x.shape[0]):
+    x_norm[i, :] = (x_norm_max - x_norm_min) / (x_max[i] - x_min[i]) * (
+    x[i, :] - x_min[i]
+    ) + x_norm_min
+    np.transpose([np.array(range(x.shape[0])),
+            x_norm.min(axis=1), x_norm.max(axis=1)])
+
+    # Before sorting
+    plt.plot(y_t[0])
+    plt.show()
+
+    y_t_s_ind = np.argsort(y_t)
+    x_n_s = np.zeros(x.shape)
+    y_t_s = np.zeros(y_t.shape)
+    for i in range(x.shape[1]):
+    y_t_s[0, i] = y_t[0, y_t_s_ind[0, i]]
+    x_n_s[:, i] = x_norm[:, y_t_s_ind[0, i]]
+
+    # After sorting
+    plt.plot(y_t_s[0])
+    plt.show()
+
+    hkl.dump([x, y_t, x_norm, x_n_s, y_t_s], "parkinsons.hkl")
+    x, y_t, x_norm, x_n_s, y_t_s = hkl.load("parkinsons.hkl")
+    if min(y_t.T)[0] > 0:
+    y = y_t.squeeze() - 1  # index of first class should equal to 0
+    else:
+    y = y_t.squeeze()
+    X = x.T
+
+    # Scale data to have mean 0 and variance 1
+    # which is importance for convergence of the neural network
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+
+    # Split the data set into training and testing
+    X_train, X_test, y_train, y_test = train_test_split(
+    X_scaled, y, test_size=0.2, random_state=2
+    )
+\end{python}
+\subsection{Skrypt dla zależności poprawności klasyfikacji od liczby neuronów w warstwach}
+\begin{python}
+    class Model(nn.Module):
+    def __init__(self, input_dim, output_dim, K1, K2):
+    super(Model, self).__init__()
+    self.layer1 = nn.Linear(input_dim, K1)
+    self.layer2 = nn.Linear(K1, K2)
+    self.layer3 = nn.Linear(K2, output_dim)
+
+    def forward(self, x):
+    x = F.relu(self.layer1(x))
+    x = F.relu(self.layer2(x))
+    x = F.softmax(self.layer3(x), dim=1)
+    return x
+
+
+    lr_vec = np.array([1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7])
+    K1_vec = np.arange(40, 1000, 30)
+    K2_vec = K1_vec
+    PK_2D_K1K2 = np.zeros([len(K1_vec), len(K2_vec)])
+    max_epoch = 4000
+    PK_2D_K1K2_max = 0
+    k1_ind_max = 0
+    k2_ind_max = 0
+    X_train = Variable(torch.from_numpy(X_train)).float()
+    y_train = Variable(torch.from_numpy(y_train)).long()
+    X_test = Variable(torch.from_numpy(X_test)).float()
+    y_test = Variable(torch.from_numpy(y_test)).long()
+    for k1_ind in range(len(K1_vec)):
+    for k2_ind in range(len(K2_vec)):
+    model = Model(X_train.shape[1], int(
+    max(y) + 1), K1_vec[k1_ind], K2_vec[k2_ind])
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr_vec[0])
+    loss_fn = nn.CrossEntropyLoss()
+
+    for epoch in range(max_epoch):
+    y_pred = model(X_train)
+    loss = loss_fn(y_pred, y_train)
+
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+
+    with torch.no_grad():
+    y_pred = model(X_test)
+    correct = (torch.argmax(y_pred, dim=1) ==
+    y_test).type(torch.FloatTensor)
+    PK = correct.mean().item() * 100
+    print("K1 {} | K2 {} | PK {} ".format(
+    K1_vec[k1_ind], K2_vec[k2_ind], PK))
+    PK_2D_K1K2[k1_ind, k2_ind] = PK
+
+    if PK > PK_2D_K1K2_max:
+    PK_2D_K1K2_max = PK
+    k1_ind_max = k1_ind
+    k2_ind_max = k2_ind
+
+    fig = plt.figure(figsize=(8, 8))
+    ax = fig.add_subplot(111, projection="3d")
+    X, Y = np.meshgrid(K1_vec, K2_vec)
+    surf = ax.plot_surface(X, Y, PK_2D_K1K2.T, cmap="viridis")
+    ax.set_xlabel("K1")
+    ax.set_ylabel("K2")
+    ax.set_zlabel("PK")
+    ax.view_init(30, 200)
+    plt.savefig("Fig.1_PK_K1K2_pytorch_parkinsons.png", bbox_inches="tight")
+
+\end{python}
+Na początku skryptu zostaje zdefiniowana klasa Model, która dziedziczy po module "nn.Module".
+Jest to model sieci neuronowej.
+W konstruktorze zdefiniowana zostaje struktura modelu, tj. warstwy liniowe (nn.Linear) i ich rozmiary.
+W klasie zostaje zdefiniowana metoda "forward", która definiuje przepływ danych przez model.
+Metoda wykorzystuje funkcje aktywacji ReLU oraz funkcję softmax na ostatniej warstwie.
+Kolejną częscią kodu jest definicja parametrów uczenia.
+Oto ich opis:
+\begin{itemize}
+    \item \texttt{lr\_vec} -- wektor współczynników uczenia, czyli prędkości z jaką model aktualizuje wagi w czasie uczenia,
+    \item \texttt{K1\_vec} oraz \texttt{K2\_vec} -- wektory, które odpowiadają rozmiarom warstw w modelu. Generowane są przy wykorzystaniu \texttt{np.arange},
+    \item \texttt{PK\_2D\_K1K2} -- macierz, która będzie przechowywać wyniki ocenu modelu dla różnych kombinacji,
+    \item \texttt{max\_epoch} -- oznacza maksymalną liczbę epok,
+    \item \texttt{PK\_2D\_K1K2\_max} -- dotychczasowa maksymalna poprawność klasyfikacji,
+    \item \texttt{k1\_ind\_max}, \texttt{k2\_ind\_max} -- indeksy kombinacji rozmiarów warstw odpowiednio \texttt{K1} oraz \texttt{K2}, dla których uzyskano najwyższą ocenę \texttt{PK\_2D\_K1K2\_max},
+    \item \texttt{X\_train}, \texttt{y\_train} -- dane treningowe,
+    \item \texttt{X\_test}, \texttt{y\_test} -- dane testowe.
+\end{itemize}
+Zagnieżdżone pętle `for' iterują po rozmiarach `K1' oraz `K2'. Tworzony jest model z odpowiednimi rozmiarami warstw i definiowany jest optymalizator (ADAM) oraz funkcja kosztu.
+W pętli treningowej obliczane są predykcje modelu, strata oraz aktualizowane są wagi modelu.
+Po zakończeniu treningu, obliczana jest ocena `PK' dla danych testowych.
+Jeżeli aktualna poprawność klasyfikacji jest większa od dotychczasowej, maksymalnej, aktualizowane są odpowiednie zmienne.
+Na końcu skryptu, tworzony jest wykres 3D, w którym oś X reprezentuje `K1', oś Y reprezentuje `K2' natomiast oś Z reprezentuje poprawność klasyfikacji (PK).
+Wykres jest zapisywany jako obraz z rozszerzeniem PNG.
+
+
 \section{Eksperymenty}
+Dla każdego eksperymentu został użyty inny skrypt.
+Pierwsze eksperymenty będą dotyczyć rozmiaru warstw, natomiast kolejne zmian współczynniku uczenia, liczby warstw oraz funkcji przejścia.
 \subsection{Eksperyment 1}
+Eksperyment pierwszy został przeprowadzony dla przykładowych liczb neuronów będących wielokrotnościami liczby 2.
+Warstwa pierwsza zawiera liczbę neuronów z zakresu ZAKRES, natomiast warstwa druga z zakresu ZAKRES.
+Współczynnik uczenia wynosi $0.1$, natomiast liczba epok $100$.
 \subsection{Eksperyment 2}
 \subsection{Eksperyment 3}
 \section{Wnioski}
