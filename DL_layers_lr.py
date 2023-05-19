@@ -1,4 +1,5 @@
 # 197 instancji, 23 cechy, 2 klasy (zdrowy 0, chory 1) dane nieuporządkowane, brak danych nieokreslonych, 24 kolumny z czego jedna odrzucamy calkiem (name)
+import matplotlib.ticker as ticker
 from torch.autograd import Variable
 import torch.nn as nn
 import torch.nn.functional as F
@@ -64,61 +65,73 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 
-# Configure Neural Network Models
 class Model(nn.Module):
-    def __init__(self, input_dim, output_dim, K):
+    def __init__(self, input_dim, output_dim, num_layers, hidden_dim):
         super(Model, self).__init__()
         self.layers = nn.ModuleList()
-        self.layers.append(nn.Linear(input_dim, K[0]))
-        for i in range(1, len(K)):
-            self.layers.append(nn.Linear(K[i-1], K[i]))
-        self.output_layer = nn.Linear(K[-1], output_dim)
+        for i in range(num_layers):
+            self.layers.append(nn.Linear(input_dim, hidden_dim))
+            input_dim = hidden_dim
+
+        self.layers.append(nn.Linear(hidden_dim, output_dim))
 
     def forward(self, x):
-        for layer in self.layers:
+        for layer in self.layers[:-1]:
             x = F.relu(layer(x))
-        x = F.softmax(self.output_layer(x), dim=1)
+        x = F.softmax(self.layers[-1](x), dim=1)
         return x
 
 
 lr_vec = np.array([1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7])
-K_vec = np.arange(2, 22, 2)
-PK_2D_K = np.zeros([len(K_vec)])
-max_epoch = 1
-PK_2D_K_max = 0
-k_ind_max = 0
+num_layers = np.arange(2, 11)  # Liczba warstw od 2 do 10
+PK_2D_lr_layers = np.zeros((len(lr_vec), len(num_layers)))
+max_epoch = 100
+max_pk = 0
+best_lr_index = 0
+
 X_train = Variable(torch.from_numpy(X_train)).float()
 y_train = Variable(torch.from_numpy(y_train)).long()
 X_test = Variable(torch.from_numpy(X_test)).float()
 y_test = Variable(torch.from_numpy(y_test)).long()
-for k_ind in range(len(K_vec)):
-    model = Model(X_train.shape[1], int(max(y) + 1), K_vec[:k_ind+1])
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr_vec[0])
-    loss_fn = nn.CrossEntropyLoss()
 
-    for epoch in range(max_epoch):
-        y_pred = model(X_train)
-        loss = loss_fn(y_pred, y_train)
+for lr_ind in range(len(lr_vec)):
+    for layer_ind in range(len(num_layers)):
+        model = Model(X_train.shape[1], int(
+            max(y) + 1), num_layers[layer_ind], hidden_dim=1)
+        optimizer = torch.optim.Adam(model.parameters(), lr=lr_vec[lr_ind])
+        loss_fn = nn.CrossEntropyLoss()
 
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
+        for epoch in range(max_epoch):
+            y_pred = model(X_train)
+            loss = loss_fn(y_pred, y_train)
 
-    with torch.no_grad():
-        y_pred = model(X_test)
-        correct = (torch.argmax(y_pred, dim=1) ==
-                   y_test).type(torch.FloatTensor)
-        PK = correct.mean().item() * 100
-        print("K {} | PK {} ".format(K_vec[k_ind], PK))
-        PK_2D_K[k_ind] = PK
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
 
-    if PK > PK_2D_K_max:
-        PK_2D_K_max = PK
-        k_ind_max = k_ind
+        with torch.no_grad():
+            y_pred = model(X_test)
+            correct = (torch.argmax(y_pred, dim=1) ==
+                       y_test).type(torch.FloatTensor)
+            PK = correct.mean().item() * 100
+            print("LR {} | Layers {} | PK {}".format(
+                lr_vec[lr_ind], num_layers[layer_ind], PK))
+            PK_2D_lr_layers[lr_ind, layer_ind] = PK
 
+            if PK > max_pk:
+                max_pk = PK
+                best_lr_index = lr_ind
+
+# Rysowanie wykresu
 fig = plt.figure(figsize=(8, 8))
-ax = fig.add_subplot(111)
-ax.plot(K_vec, PK_2D_K)
-ax.set_xlabel("Number of Hidden Layers (K)")
-ax.set_ylabel("PK")
-plt.savefig("Fig.1_PK_layers_pytorch_parkinsons.png", bbox_inches="tight")
+ax = fig.add_subplot(111, projection="3d")
+X, Y = np.meshgrid(lr_vec, num_layers)
+surf = ax.plot_surface(X, Y, PK_2D_lr_layers.T, cmap="viridis")
+ax.set_xlabel("Współczynnik uczenia")
+ax.set_ylabel("Liczba warstw")
+ax.set_zlabel("PK")
+ax.view_init(30, 200)
+ax.xaxis.set_major_formatter(ticker.ScalarFormatter(useMathText=True))
+ax.xaxis.offsetText.set_fontsize(10)
+plt.savefig("Fig.1_PK_layers_learning_rate_pytorch_parkinsons.png",
+            bbox_inches="tight")
