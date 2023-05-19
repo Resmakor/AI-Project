@@ -32,7 +32,7 @@ np.transpose([np.array(range(x.shape[0])),
 
 # Before sorting
 plt.plot(y_t[0])
-plt.show()
+# plt.show()
 
 y_t_s_ind = np.argsort(y_t)
 x_n_s = np.zeros(x.shape)
@@ -43,7 +43,7 @@ for i in range(x.shape[1]):
 
 # After sorting
 plt.plot(y_t_s[0])
-plt.show()
+# plt.show()
 
 hkl.dump([x, y_t, x_norm, x_n_s, y_t_s], "parkinsons.hkl")
 x, y_t, x_norm, x_n_s, y_t_s = hkl.load("parkinsons.hkl")
@@ -80,10 +80,10 @@ class Model(nn.Module):
 
 
 lr_vec = np.array([1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7])
-K1_vec = np.arange(2, 11, 2)
+K1_vec = np.arange(2, 200, 2)
 K2_vec = K1_vec
 PK_2D_K1K2 = np.zeros([len(K1_vec), len(K2_vec)])
-max_epoch = 10000
+max_epoch = 100
 PK_2D_K1K2_max = 0
 k1_ind_max = 0
 k2_ind_max = 0
@@ -120,6 +120,8 @@ for k1_ind in range(len(K1_vec)):
             k1_ind_max = k1_ind
             k2_ind_max = k2_ind
 
+
+print(K1_vec[k1_ind_max], K2_vec[k2_ind_max], PK_2D_K1K2_max)
 fig = plt.figure(figsize=(8, 8))
 ax = fig.add_subplot(111, projection="3d")
 X, Y = np.meshgrid(K1_vec, K2_vec)

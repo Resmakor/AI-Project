@@ -409,9 +409,31 @@ Dla każdego eksperymentu został użyty inny skrypt.
 Pierwsze eksperymenty będą dotyczyć rozmiaru warstw, natomiast kolejne zmian współczynniku uczenia, liczby warstw oraz funkcji przejścia.
 \subsection{Eksperyment 1}
 Eksperyment pierwszy został przeprowadzony dla przykładowych liczb neuronów będących wielokrotnościami liczby 2.
-Warstwa pierwsza zawiera liczbę neuronów z zakresu ZAKRES, natomiast warstwa druga z zakresu ZAKRES.
+Warstwa pierwsza zawiera liczbę neuronów z zakresu (2; 30), natomiast warstwa druga z tego samego zakresu.
 Współczynnik uczenia wynosi $0.1$, natomiast liczba epok $100$.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth, keepaspectratio]{k1_k2_1.png}
+    \caption{Zależność poprawności klasyfikacji od liczby neuronów w warstwach K1, K2}
+    \label{fig:k1k2_1}
+\end{figure}
+Dla danych metaparametrów, wykres jest płaski.
+Poza wartościami dla małych wartości K2, dominującą wartością poprawności klasyfikacji jest 79.48
+Oznacza, to że rozmiary warstw mogą mieć minimalny wpływ na wydajność sieci.
+Hipoteza zostanie zweryfikowana w drugim eksperymencie.
+Semioptymalne wartości to: K1 = 6, K2 = 4, PK(K1, K2) = 87.17.
 \subsection{Eksperyment 2}
+Tym razem, warstwa pierwsza i druga zawiera liczbę neuronów z zakresu (2; 200).
+Pozostałe parametry pozostały takie same.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth, keepaspectratio]{k1_k2_2.png}
+    \caption{Zależność poprawności klasyfikacji od liczby neuronów w warstwach K1, K2}
+    \label{fig:k1k2_2}
+\end{figure}
+Sieć uczyła się zdecydowanie dłużej, natomiast było warto.
+Okazało się, ze hipoteza z eksperymentu pierwszego jest prawdziwa.
+Udało się natomiast minimalnie zwiększyć maksymalną poprawność klasyfikacji do `92.30', dla K1 = 90 oraz K2 = 8.
 \subsection{Eksperyment 3}
 \section{Wnioski}
 \begin{thebibliography}{9}
