@@ -486,6 +486,71 @@ Lista `K' zawiera liczbę neuronów dla poszczególnych warstw.
 Występują również dwie zagnieżdżone pętle, które iterują po liczbie warstw z zakresu 3 - 10 oraz po współczynniku uczenia.
 Założono, że liczba neuronów w danej warstwie będzie wynosić `K1', jeżeli numer warstwy jest parzysty oraz `K2' w przeciwnym wypadku.
 Na końcu rysowany jest wykres zależności poprawności klasyfikacji od liczby warstw w sieci i współczynniku uczenia.
+\subsection{Skrypt dla zależności poprawności klasyfikacji od liczby warstw oraz współczynnika uczenia [6]}
+\begin{verbatim}
+class Model(nn.Module):
+    def __init__(self, input_dim, output_dim, K, activation):
+        super(Model, self).__init__()
+        layers = [nn.Linear(input_dim, K[0])]
+        for i in range(len(K) - 1):
+            layers.append(nn.Linear(K[i], K[i+1]))
+        layers.append(nn.Linear(K[-1], output_dim))
+        self.layers = nn.ModuleList(layers)
+        self.activation = activation
+
+    def forward(self, x):
+        for layer in self.layers[:-1]:
+            x = self.activation(layer(x))
+        x = F.softmax(self.layers[-1](x), dim=1)
+        return x
+
+activations = [F.relu, F.tanh, F.sigmoid]
+PK_activations = []
+X_train = Variable(torch.from_numpy(X_train)).float()
+y_train = Variable(torch.from_numpy(y_train)).long()
+X_test = Variable(torch.from_numpy(X_test)).float()
+y_test = Variable(torch.from_numpy(y_test)).long()
+
+layers = 2
+K = [6, 4]
+max_epoch = 100
+lr_vec = np.array([1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7])
+for activation in activations:
+    model = Model(X_train.shape[1], int(max(y) + 1), K, activation)
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr_vec[0])
+    loss_fn = nn.CrossEntropyLoss()
+
+    for epoch in range(max_epoch):
+        y_pred = model(X_train)
+        loss = loss_fn(y_pred, y_train)
+
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+    with torch.no_grad():
+        y_pred = model(X_test)
+        correct = (torch.argmax(y_pred, dim=1) == y_test).type(torch.FloatTensor)
+        PK = correct.mean().item() * 100
+        PK_activations.append(PK)
+        print("PK {} FUNCTION {}".format(PK, activation))
+
+fig = plt.figure(figsize=(8, 8))
+ax = fig.add_subplot()
+ax.bar(['ReLU', 'Tanh', 'Sigmoid'], PK_activations)
+ax.set_xlabel('Funkcja aktywacji')
+ax.set_ylabel('PK')
+plt.savefig("Fig.2_PK_activations_pytorch_parkinsons.png", bbox_inches="tight")
+plt.show()
+
+\end{verbatim}
+
+Konstruktor klasy `Model' został uzupełniony o przekazywaną funkcję aktywacji.
+W kodzie pojawiła się również lista `activations', która zawiera funkcję aktywacji takie jak ReLU, tangens hiperboliczny oraz funkcję sigmoidalną.
+Dalsza część skryptu polega na iteracji po tej liście.
+Obliczana jest maksymalna poprawność klasyfikacji w zależności od użytej funkcji aktywacji.
+Na końcu rysowany jest wykres zależności poprawności klasyfikacji od użytej funkcji przejścia.
+
 \section{Eksperymenty}
 Dla każdego eksperymentu został użyty inny skrypt.
 Pierwsze eksperymenty dotyczą rozmiaru warstw dla sieci trójwarstwowej, natomiast kolejne dotyczą zmian współczynniku uczenia, liczby warstw oraz funkcji przejścia.
@@ -578,6 +643,50 @@ Przy liczbie warstw większej od 5 oraz współczynniku uczenia mniejszym od $10
 Dla przeciwnych wartości dominuje identyczna wartość poprawności klasyfikacji tzn. 79.
 Dla LR: $0.001$, L warstw 4 PK 87
 
+
+\subsection{Eksperyment 7}
+Tym razem zostanie zbadany wpływ użytej funkcji przejścia.
+Dotychczas do warstwy pierwszej oraz ukrytych była używana funkcja ReLU.
+Dla porównania wykorzystane zostaną funkcje aktywacji takie jak sigmoidalna oraz tangens hiperboliczny.
+Eksperyment zostanie przeprowadzony dla suboptymalnych wartości z eksperymentu pierwszego: `K1' = 6, `K2' = 4, współczynnik uczenia wynosi $0.1$ natomiast liczba epok to 100.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth, keepaspectratio]{ACTIVATION_1_1.png}
+    \caption{Zależność poprawności klasyfikacji od użytej funkcji przejścia}
+    \label{fig:activ_1}
+\end{figure}
+Z użyciem tangensa hiperbolicznego jako funkcji przejścia, sieć miała najwyższą poprawność klasyfikacji wynoszącą 79,48.
+Różnica między pozostałymi funkcjami nie była jednak taka duża ($2.56$).
+
+Skrypt został uruchomiony ponownie, dla tych samych parametrów.
+Tym razem wynik był inny.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth, keepaspectratio]{ACTIVATION_1_2.png}
+    \caption{Zależność poprawności klasyfikacji od użytej funkcji przejścia}
+    \label{fig:activ_2}
+\end{figure}
+Większą poprawnością klasyfikacji charakteryzowała się użyta funkcja sigmoidalna (82), natomiast tangens hiperboliczny 79.48 i ReLU 76.92.
+Powodem zmiany poprzedniego wyniku może być początkowe ustalenie wag, które odbywa się w sposób losowy.
+Oznacza to, że funkcja aktywacji w tym przypadku nie odgrywa tak znaczącej roli.
+\subsection{Eksperyment 8}
+Być może wynik zmieni się, gdy użyta zostanie większa liczba warstw oraz większa liczba neuronów w sieci.
+Teraz liczba warstw będzie wynosić 5, liczba neuronów dla każdej warstwy 100, współczynnik uczenia $0.1$, a liczba epok 1000.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth, keepaspectratio]{ACTIVATION_2_1.png}
+    \caption{Zależność poprawności klasyfikacji od użytej funkcji przejścia}
+    \label{fig:activ_2}
+\end{figure}
+
+W tym przypadku użyta funkcja aktywacji ma ogromne znaczenie.
+Tangens hiperboliczny osiągnął bardzo niski wynik poprawności klasyfikacji na poziomie 53.84.
+Funkcja ReLU oraz sigmoidalna uzyskały ten sam poziom 79.48.
+
+Gdy skrypt został uruchomiony ponownie tangens hiperboliczny znowu uzyskał najniższą poprawność klasyfikacji.
+Oznacza to, że dla takich parametrów najlepiej użyć funkcji ReLU lub sigmoidalnej.
 \section{Wnioski}
 Na podstawie przeprowadzonych eksperymentów można było dostrzec różne zachowania sieci w zależności od dobranych parametrów.
 Parametry można było dobrać w taki sposób, że liczba neuronów w sieci nie miała zbyt dużego wpływu na poprawność klasyfikacji.

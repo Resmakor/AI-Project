@@ -67,86 +67,57 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 # Configure Neural Network Models
 
-
 class Model(nn.Module):
-    def __init__(self, input_dim, output_dim, K1, K2):
+    def __init__(self, input_dim, output_dim, K, activation):
         super(Model, self).__init__()
-        self.layer1 = nn.Linear(input_dim, K1)
-        self.layer2 = nn.Linear(K1, K2)
-        self.layer3 = nn.Linear(K2, output_dim)
+        layers = [nn.Linear(input_dim, K[0])]
+        for i in range(len(K) - 1):
+            layers.append(nn.Linear(K[i], K[i+1]))
+        layers.append(nn.Linear(K[-1], output_dim))
+        self.layers = nn.ModuleList(layers)
+        self.activation = activation
 
     def forward(self, x):
-        x = F.relu(self.layer1(x))
-        x = F.relu(self.layer2(x))
-        x = F.sigmoid(self.layer3(x))
+        for layer in self.layers[:-1]:
+            x = self.activation(layer(x))
+        x = F.softmax(self.layers[-1](x), dim=1)
         return x
 
-
-lr_vec = np.array([1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7])
-K1_vec = np.arange(10, 400, 50)
-K2_vec = K1_vec
-activation_functions = ['relu', 'sigmoid', 'tanh']
-PK_3D_K1K2_activation = np.zeros(
-    [len(K1_vec), len(K2_vec), len(activation_functions)])
-max_epoch = 5
-PK_3D_K1K2_activation_max = 0
-k1_ind_max = 0
-k2_ind_max = 0
-activation_max = ''
-
+activations = [F.relu, F.tanh, F.sigmoid]
+PK_activations = []
 X_train = Variable(torch.from_numpy(X_train)).float()
 y_train = Variable(torch.from_numpy(y_train)).long()
 X_test = Variable(torch.from_numpy(X_test)).float()
 y_test = Variable(torch.from_numpy(y_test)).long()
 
-for k1_ind in range(len(K1_vec)):
-    for k2_ind in range(len(K2_vec)):
-        for activation_ind, activation in enumerate(activation_functions):
-            model = Model(X_train.shape[1], int(
-                max(y) + 1), K1_vec[k1_ind], K2_vec[k2_ind])
-            optimizer = torch.optim.Adam(model.parameters(), lr=lr_vec[5])
-            loss_fn = nn.CrossEntropyLoss()
+layers = 5
+K = [100, 100, 100, 100, 100]
+max_epoch = 1000
+lr_vec = np.array([1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7])
+for activation in activations:
+    model = Model(X_train.shape[1], int(max(y) + 1), K, activation)
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr_vec[0])
+    loss_fn = nn.CrossEntropyLoss()
 
-            for epoch in range(max_epoch):
-                y_pred = model(X_train)
-                loss = loss_fn(y_pred, y_train)
+    for epoch in range(max_epoch):
+        y_pred = model(X_train)
+        loss = loss_fn(y_pred, y_train)
 
-                optimizer.zero_grad()
-                loss.backward()
-                optimizer.step()
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
 
-            with torch.no_grad():
-                y_pred = model(X_test)
-                correct = (torch.argmax(y_pred, dim=1) ==
-                           y_test).type(torch.FloatTensor)
-                PK = correct.mean().item() * 100
-                print("K1 {} | K2 {} | Activation {} | PK {}".format(
-                    K1_vec[k1_ind], K2_vec[k2_ind], activation, PK))
-                PK_3D_K1K2_activation[k1_ind, k2_ind, activation_ind] = PK
-
-                if PK > PK_3D_K1K2_activation_max:
-                    PK_3D_K1K2_activation_max = PK
-                    k1_ind_max = k1_ind
-                    k2_ind_max = k2_ind
-                    activation_max = activation
-
-print("Max PK: K1 {} | K2 {} | Activation {} | PK {}".format(
-    K1_vec[k1_ind_max], K2_vec[k2_ind_max], activation_max, PK_3D_K1K2_activation_max))
+    with torch.no_grad():
+        y_pred = model(X_test)
+        correct = (torch.argmax(y_pred, dim=1) == y_test).type(torch.FloatTensor)
+        PK = correct.mean().item() * 100
+        PK_activations.append(PK)
+        print("PK {} FUNCTION {}".format(PK, activation))
 
 fig = plt.figure(figsize=(8, 8))
-ax = fig.add_subplot(111, projection="3d")
-X, Y = np.meshgrid(K1_vec, K2_vec)
-# Define colors for each activation function
-colors = ['viridis', 'plasma', 'inferno']
-
-for activation_ind, activation in enumerate(activation_functions):
-    surf = ax.plot_surface(
-        X, Y, PK_3D_K1K2_activation[:, :, activation_ind].T, cmap=colors[activation_ind], label=activation)
-
-ax.set_xlabel("K1")
-ax.set_ylabel("K2")
-ax.set_zlabel("PK")
-ax.view_init(30, 200)
-ax.legend()
-plt.savefig("Fig.1_PK_K1K2_activation_pytorch_parkinsons.png",
-            bbox_inches="tight")
+ax = fig.add_subplot()
+ax.bar(['ReLU', 'Tanh', 'Sigmoid'], PK_activations)
+ax.set_xlabel('Funkcja aktywacji')
+ax.set_ylabel('PK')
+plt.savefig("Fig.2_PK_activations_pytorch_parkinsons.png", bbox_inches="tight")
+plt.show()
