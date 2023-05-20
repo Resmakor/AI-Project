@@ -503,7 +503,7 @@ plt.show()
 Względem poprzedniego skryptu, klasa Model uległa zmianie.
 Konstruktor tej klasy inicjalizuje kolejne warstwy sieci, na podstawie przekazanej listy `K'.
 Lista `K' zawiera liczbę neuronów dla poszczególnych warstw.
-Występują również dwie zagnieżdżone pętle, które iterują po liczbie warstw z zakresu 3 - 10 oraz po współczynniku uczenia z zakresu $10^-1$ - $10^-7$.
+Występują również dwie zagnieżdżone pętle, które iterują po liczbie warstw z zakresu 3 - 10 oraz po współczynniku uczenia z zakresu $10^{-1}$ - $10^{-7}$.
 Założono, że liczba neuronów w danej warstwie będzie wynosić `K1', jeżeli numer warstwy jest parzysty oraz `K2' w przeciwnym wypadku.
 Na końcu rysowany jest wykres zależności poprawności klasyfikacji od liczby warstw sieci i współczynniku uczenia.
 
@@ -590,6 +590,7 @@ Dla danych metaparametrów wykres jest płaski.
 Poza punktami dla małej liczby neuronów w warstwie K2, dominującą wartością poprawności klasyfikacji jest $79.48\%$.
 Oznacza, to że rozmiary warstw mogą mieć minimalny wpływ na wydajność sieci dla takich metaparametrów.
 Powyższa hipoteza zostanie zweryfikowana w drugim eksperymencie.
+
 Semioptymalne wartości to: `K1' = 6, `K2' = 4, PK(K1, K2) = $87.17\%$.
 
 \subsection{Eksperyment 2}
@@ -651,7 +652,7 @@ Eksperyment będzie przeprowadzony w sposób analogiczny do poprzedniego, ale li
     \label{fig:lr_layers_2}
 \end{figure}
 
-Przy liczbie warstw większej od 5 oraz współczynniku uczenia mniejszym od $10^-6$ sieć wykazuje niestabilne zachowanie.
+Przy liczbie warstw większej od 5 oraz współczynniku uczenia mniejszym od $10^{-6}$ sieć wykazuje niestabilne zachowanie.
 To zjawisko jest podobne do obserwowanego w poprzednim eksperymencie.
 Liczba epok nie ma tu zbyt wielkiego znaczenia.
 Najlepszy wynik poprawności klasyfikacji uzyskano przy użyciu 9 warstw i współczynnika uczenia wynoszącego $0.1$, co dało wynik na poziomie $84$\%.
@@ -676,6 +677,7 @@ Najlepszy wynik poprawności klasyfikacji uzyskano przy użyciu 4 warstw i wspó
 Tym razem badany będzie wpływ różnych funkcji aktywacji na poprawność klasyfikacji.
 Dotychczas w warstwie pierwszej oraz w warstwach ukrytych używana była funkcja ReLU.
 W celu porównania, zostaną wykorzystane funkcje aktywacji sigmoidalna oraz tangens hiperboliczny.
+
 Eksperyment zostanie przeprowadzony dla suboptymalnych wartości z pierwszego eksperymentu: `K1' = 6, `K2' = 4, współczynnik uczenia to $0.1$, a liczba epok to $100$.
 
 \begin{figure}[H]
@@ -719,11 +721,13 @@ Natomiast funkcja ReLU oraz sigmoidalna uzyskały identyczny wynik wynoszący $7
 Po ponownym uruchomieniu skryptu, tangens hiperboliczny znowu uzyskał najniższą poprawność klasyfikacji.
 Wynika z tego, że dla tych parametrów, dla warstw ukrytych najlepiej użyć funkcji ReLU lub funkcji sigmoidalnej.
 
+\newpage
 \section{Wnioski}
 Na podstawie przeprowadzonych eksperymentów można było dostrzec różne zachowania sieci w zależności od dobranych parametrów.
 Parametry można było dobrać w taki sposób, że liczba neuronów w sieci nie miała dużego wpływu na poprawność klasyfikacji.
 Miała jednak ogromny wpływ jeżeli chodzi o szybkość nauki, gdyż m.in. w eksperymencie drugim na koniec działania skryptu czas oczekiwania wzrósł kilkunastokrotnie względem pierwszego.
 
+\newpage
 \begin{thebibliography}{9}
     \bibitem{Nielsen}
     Michael Nielsen,
