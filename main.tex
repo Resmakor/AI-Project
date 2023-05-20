@@ -404,6 +404,88 @@ Po zakończeniu treningu, obliczana jest ocena `PK' dla danych testowych.
 Jeżeli aktualna poprawność klasyfikacji jest większa od dotychczasowej, maksymalnej, aktualizowane są odpowiednie zmienne.
 Na końcu skryptu, tworzony jest wykres 3D, w którym oś X reprezentuje `K1', oś Y reprezentuje `K2', natomiast oś Z reprezentuje poprawność klasyfikacji `PK'.
 Wykres jest zapisywany jako obraz z rozszerzeniem PNG.
+\subsection{Skrypt dla zależności poprawności klasyfikacji od liczby warstw oraz współczynnika uczenia}
+\begin{verbatim}
+class Model(nn.Module):
+    def __init__(self, input_dim, output_dim, K):
+        super(Model, self).__init__()
+        layers = [nn.Linear(input_dim, K[0])]
+        for i in range(len(K) - 1):
+            layers.append(nn.Linear(K[i], K[i+1]))
+        layers.append(nn.Linear(K[-1], output_dim))
+        self.layers = nn.ModuleList(layers)
+
+    def forward(self, x):
+        for layer in self.layers[:-1]:
+            x = F.relu(layer(x))
+        x = F.sigmoid(self.layers[-1](x))
+        return x
+    
+lr_vec = np.array([1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7])
+K1 = 6
+K2 = 4
+max_layers = 10
+PK_3D_K = np.zeros((len(lr_vec), max_layers))
+max_epoch = 100
+PK_max = 0
+lr_max_ind = 0
+layers_for_max_PK = 0
+
+X_train = Variable(torch.from_numpy(X_train)).float()
+y_train = Variable(torch.from_numpy(y_train)).long()
+X_test = Variable(torch.from_numpy(X_test)).float()
+y_test = Variable(torch.from_numpy(y_test)).long()
+
+for lr_ind in range(len(lr_vec)):
+    for i in range(3, max_layers + 1):
+        layers = []
+        for j in range(i):
+            if j % 2 == 0:
+                layers.append(K1)
+            else:
+                layers.append(K2)
+        model = Model(X_train.shape[1], int(max(y) + 1), layers)
+        optimizer = torch.optim.Adam(model.parameters(), lr=lr_vec[lr_ind])
+        loss_fn = nn.CrossEntropyLoss()
+
+        for epoch in range(max_epoch):
+            y_pred = model(X_train)
+            loss = loss_fn(y_pred, y_train)
+
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+        with torch.no_grad():
+            y_pred = model(X_test)
+            correct = (torch.argmax(y_pred, dim=1) == y_test).type(torch.FloatTensor)
+            PK = correct.mean().item() * 100
+            print("LR {} | K1 {} | K2 {} | PK {} | layers {} | layers_count {} ".format(lr_vec[lr_ind], K1, K2, PK, layers, len(layers)))
+            PK_3D_K[lr_ind, i - 3] = PK
+
+        if PK > PK_max:
+            PK_max = PK
+            lr_max_ind = lr_ind
+            layers_for_max_PK = len(layers)
+
+print("Max PK: {} for LR: {} | K1: {} | K2: {} | layers_count {} ".format(PK_max, lr_vec[lr_max_ind], K1, K2, layers_for_max_PK))
+PK_3D_K = PK_3D_K[:, :max_layers-2]
+fig = plt.figure(figsize=(8, 8))
+ax = fig.add_subplot(111, projection='3d')
+Y, X = np.meshgrid(np.log10(lr_vec), np.array([range(3, max_layers + 1)]))
+ax.plot_surface(X, Y, PK_3D_K.T, cmap='viridis')
+ax.set_xlabel('Liczba warstw')
+ax.set_ylabel('Współczynnik uczenia (10^x)')
+ax.set_zlabel('PK')
+plt.savefig("Fig.1_PK_layers_lr_pytorch_parkinsons.png", bbox_inches="tight")
+plt.show()
+\end{verbatim}
+Względem poprzedniego skryptu, klasa Model uległa zmianie.
+Konstruktor tej klasy inicjalizuje kolejne warstwy sieci, na podstawie przekazanej listy `K'.
+Lista `K' zawiera liczbę neuronów dla poszczególnych warstw.
+Występują również dwie zagnieżdżone pętle, które iterują po liczbie warstw z zakresu 3 - 10 oraz po współczynniku uczenia.
+Założono, że liczba neuronów w danej warstwie będzie wynosić `K1', jeżeli numer warstwy jest parzysty oraz `K2' w przeciwnym wypadku.
+Na końcu rysowany jest wykres zależności poprawności klasyfikacji od liczby warstw w sieci i współczynniku uczenia.
 \section{Eksperymenty}
 Dla każdego eksperymentu został użyty inny skrypt.
 Pierwsze eksperymenty dotyczą rozmiaru warstw dla sieci trójwarstwowej, natomiast kolejne dotyczą zmian współczynniku uczenia, liczby warstw oraz funkcji przejścia.
@@ -449,7 +531,25 @@ Jak widać na powyższym rysunku, sieć zachowuje się chaotycznie utrzymując j
 \subsection{Eksperyment 4}
 Tym razem eksperyment będzie polegał na zmianie liczby warstw oraz współczynniku uczenia sieci.
 Wykorzystany został do tego różniący się od poprzedniego skrypt.
+Liczba neuronów wynosi 6, jeżeli indeks warstwy jest parzysty oraz 4 w przeciwnym wypadku.
+Liczba epok to 100, a maksymalna liczba warstw to 10.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth, keepaspectratio]{LR_LAYERS_100ECHO.PNG}
+    \caption{Zależność poprawności klasyfikacji od liczby warstw i współczynniku uczenia}
+    \label{fig:lr_layers_1}
+\end{figure}
+
+Dla zmniejszającego się współczynnika uczenia, sieć zachowuje się bardziej nieprzewidywalnie.
+Z wykresu wynika, że liczba warstw nie ma tak dużego wpływu na uczenie się sieci.
+Znowu dominuje poprawność klasyfikacji na poziomie około 79.
+Być może liczba epok wynosząca 100 jest zbyt mała.
+Kolejny eksperyment to zweryfikuje.
+
 \subsection{Eksperyment 5}
+Eksperyment będzie analogiczny do poprzedniego, z tym że liczba epok wzrośnie do 3000.
+
 \section{Wnioski}
 Na podstawie przeprowadzonych eksperymentów można było dostrzec różne zachowania sieci w zależności od dobranych parametrów.
 Parametry można było dobrać w taki sposób, że liczba neuronów w sieci nie miała zbyt dużego wpływu na poprawność klasyfikacji.

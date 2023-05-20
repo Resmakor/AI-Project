@@ -292,8 +292,6 @@ ax.set_ylabel('Learning Rate (LR)')
 ax.set_zlabel('PK')
 ax.set_title('PK vs. Number of Layers and LR')
 plt.show()'''
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 
 class Model(nn.Module):
     def __init__(self, input_dim, output_dim, K):
@@ -315,7 +313,7 @@ K1 = 6
 K2 = 4
 max_layers = 10
 PK_3D_K = np.zeros((len(lr_vec), max_layers))
-max_epoch = 100
+max_epoch = 3000
 PK_max = 0
 lr_max_ind = 0
 layers_for_max_PK = 0
