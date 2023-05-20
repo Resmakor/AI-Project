@@ -57,6 +57,7 @@ gdzie:
     \item $x_{norm}$ - to macierz zawierająca znormalizowane dane.
     \item $x$ - to macierz zawierająca dane wejściowe.
 \end{itemize}
+\newpage
 \section{Zagadnienia teoretyczne}
 \subsection{Matematyczny opis sztucznego neuronu}
 Podstawowym elementem budującym strukturę sieci neuronowej jest neuron. Jest to element, który przetwarza informacje.
@@ -144,14 +145,16 @@ gdzie:
     \item \(e\) --  podstawa logarytmu naturalnego, przybliżone do wartości 2.71828,
     \item \(f(x)\) -- wartość wyjściowa funkcji sigmoidalnej, przekształcająca \(x\) na wartość z przedziału (0, 1).
 \end{itemize}
+
 Ostatnią funkcją aktywacji, którą wykorzystałem jest tangens hiperboliczny.
 Funkcja ta może zostać użyta zarówno do warstw ukrytych jak i warstwy ostatniej.
-Funkcję można zdefiniować w następujący sposób:
+Oto jej definicja:
 \[\text{tanh}(x) = \frac{{\exp(x) - \exp(-x)}}{{\exp(x) + \exp(-x)}}\]
 Wartości tej funkcji mieszczą się w zakresie (-1; 1).
 Funkcja kształtem przypomina funkcję sigmoidalną.
-Warto wspomnieć o tym, że ta funkcja jest bardziej wrażliwa na duże wartości wejściowe niż funkcja sigmoidalna, co może prowadzić do problemów z gradientem w czasie uczenia sieci.
+Warto wspomnieć o tym, że tangens hiperboliczny jest bardziej wrażliwy na duże wartości wejściowe niż funkcja sigmoidalna, co może prowadzić do problemów z gradientem w czasie uczenia sieci.
 
+\newpage
 \subsection{Sieć głęboka}
 Sieci głębokie to rodzaj modeli uczenia maszynowego, które składają się z wielu warstw neuronów, zwanych warstwami głębokimi.
 Uczenie sieci głębokich opiera się na zasadzie propagacji wstecznej, która jest jednym z kluczowych algorytmów używanych do dostosowania wag sieci neuronowej w procesie uczenia.
@@ -249,8 +252,9 @@ gdzie:
 \end{itemize}
 
 Przy użyciu tych wzorów, w metodzie optymalizacji ADAM aktualizuje się wagi sieci neuronowej, wykorzystując estymację momentu i drugiego momentu gradientu.
-To pozwala na efektywną optymalizację sieci głębokiej, dostosowując krok uczenia (learning rate) dla każdej wagi indywidualnie.
+To pozwala na efektywną optymalizację sieci głębokiej, dostosowując krok uczenia dla każdej wagi indywidualnie.
 
+\newpage
 \section{Realizacja sieci neuronowej}
 \subsection{Opis skryptu}
 
@@ -582,6 +586,7 @@ Obliczana jest maksymalna poprawność klasyfikacji w zależności od użytej fu
 \section{Eksperymenty}
 Dla każdego eksperymentu został użyty nieco inny skrypt.
 Pierwsze eksperymenty dotyczą rozmiaru warstw dla sieci trójwarstwowej, natomiast kolejne dotyczą zmian współczynniku uczenia, liczby warstw oraz funkcji przejścia.
+
 \subsection{Eksperyment 1}
 
 Eksperyment pierwszy został przeprowadzony dla przykładowych liczb neuronów będących wielokrotnościami liczby 2.
@@ -602,6 +607,7 @@ Powyższa hipoteza zostanie zweryfikowana w drugim eksperymencie.
 
 Semioptymalne wartości to: `K1' = 6, `K2' = 4, PK(K1, K2) = $87.17\%$.
 
+\newpage
 \subsection{Eksperyment 2}
 Tym razem warstwa pierwsza i druga zawierają liczbę neuronów z zakresu 2 - 200.
 Pozostałe parametry są niezmienione.
@@ -618,6 +624,7 @@ Okazało się jednak, że hipoteza z eksperymentu pierwszego jest prawdziwa.
 Wykres jest płaski również dla większej liczby neuronów.
 Minimalnie wzrosła maksymalna poprawność klasyfikacji z $87.17\%$ do $92.30\%$ dla K1 = 90 oraz K2 = 8.
 
+\newpage
 \subsection{Eksperyment 3}
 Plan trzeciego eksperymentu zakłada poszukiwanie takich metaparametrów aby wzbogacić wykres o większą głębię.
 Zmienione zostaną pozostałe parametry, nie tylko liczba neuronów w danej warstwie.
@@ -633,6 +640,8 @@ Warstwa pierwsza i druga będą zawierać liczbę neuronów z zakresu 10 - 400 z
 
 Jak widać na powyższym rysunku, sieć zachowuje się chaotycznie utrzymując jednak wciąż dosyć wysoki poziom poprawności klasyfikacji.
 Dla takich parametrów wykres nie jest już tak płaski jak w poprzednich eksperymentach.
+
+\newpage
 \subsection{Eksperyment 4}
 Eksperyment czwarty będzie polegał na zmianie liczby warstw oraz współczynniku uczenia sieci.
 W tym celu użyto innego skryptu niż ten wykorzystany w poprzednich eksperymentach.
@@ -652,6 +661,7 @@ Znowu dominuje poprawność klasyfikacji na poziomie około $79\%$.
 Możliwe, że liczba 100 epok jest niewystarczająca.
 Kolejny eksperyment to zweryfikuje.
 
+\newpage
 \subsection{Eksperyment 5}
 Eksperyment będzie przeprowadzony w sposób analogiczny do poprzedniego, ale liczba epok zostanie zwiększona do 3000.
 \begin{figure}[H]
@@ -666,6 +676,7 @@ To zjawisko jest podobne do obserwowanego w poprzednim eksperymencie.
 Liczba epok nie ma tu zbyt wielkiego znaczenia.
 Najlepszy wynik poprawności klasyfikacji uzyskano przy użyciu 9 warstw i współczynnika uczenia wynoszącego $0.1$, co dało wynik na poziomie $84$\%.
 
+\newpage
 \subsection{Eksperyment 6}
 Eksperyment ten sprawdzi co się stanie, gdy zwiększymy liczbę neuronów dla `K1' do 1500 oraz `K2' do 1000.
 Liczba epok zostanie przywrócona do 100.
@@ -682,6 +693,7 @@ W przypadku liczby warstw większej niż 5 oraz współczynnika uczenia mniejsze
 Dla pozostałych wartości, poprawność klasyfikacji utrzymuje się na identycznym poziomie, wynoszącym $79\%$.
 Najlepszy wynik poprawności klasyfikacji uzyskano przy użyciu 4 warstw i współczynnika uczenia wynoszącego $0.001$, co dało rezultat na poziomie $87\%$.
 
+\newpage
 \subsection{Eksperyment 7}
 Tym razem badany będzie wpływ różnych funkcji aktywacji na poprawność klasyfikacji.
 Dotychczas w warstwie pierwszej oraz w warstwach ukrytych używana była funkcja ReLU.
@@ -712,6 +724,7 @@ Tangens hiperboliczny miał poprawność klasyfikacji na poziomie $79.48\%$, nat
 Powodem zmiany względem poprzedniego wyniku może być losowy początkowy dobór wag, który ma miejsce podczas inicjalizacji sieci.
 To sugeruje, że w tym przypadku funkcja aktywacji nie odgrywa tak istotnej roli.
 
+\newpage
 \subsection{Eksperyment 8}
 Możliwe, że wynik ulegnie zmianie, gdy zwiększona zostanie liczba warstw i liczba neuronów w sieci.
 W ósmym eksperymencie liczba warstw wynosić będzie 5, a liczba neuronów dla każdej warstwy będzie wynosić 100.
@@ -742,7 +755,7 @@ Można wyciągnąć wniosek, że optymalne wyniki sieć uzyskiwała dla umiarkow
 
 Następne eksperymenty wykazały, że dla pewnych parametrów, wybór funkcji aktywacji ma istotny wpływ na poprawność klasyfikacji.
 Najlepsze wyniki osiągnięto przy użyciu funkcji ReLU lub funkcji sigmoidalnej.
-Należy jednak pamiętać, że dla różnych kombinacji liczby warstw i neuronów wyniki mogą być zgoła inne.
+Należy jednak pamiętać, że dla różnych kombinacji liczby warstw i neuronów wyniki mogą być całkowicie inne.
 
 Podsumowując, w większości przypadków rozmiar warstw, współczynnik uczenia, liczba warstw oraz funkcja aktywacji mają wpływ na działanie sieci.
 Optymalne wartości tych parametrów będą różnić się w zależności od konkretnego zadania i zbioru danych.
