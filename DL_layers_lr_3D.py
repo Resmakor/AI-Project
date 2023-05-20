@@ -309,11 +309,11 @@ class Model(nn.Module):
         return x
     
 lr_vec = np.array([1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7])
-K1 = 6
-K2 = 4
+K1 = 1500
+K2 = 1000
 max_layers = 10
 PK_3D_K = np.zeros((len(lr_vec), max_layers))
-max_epoch = 3000
+max_epoch = 1000
 PK_max = 0
 lr_max_ind = 0
 layers_for_max_PK = 0

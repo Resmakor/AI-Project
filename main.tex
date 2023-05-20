@@ -404,7 +404,7 @@ Po zakończeniu treningu, obliczana jest ocena `PK' dla danych testowych.
 Jeżeli aktualna poprawność klasyfikacji jest większa od dotychczasowej, maksymalnej, aktualizowane są odpowiednie zmienne.
 Na końcu skryptu, tworzony jest wykres 3D, w którym oś X reprezentuje `K1', oś Y reprezentuje `K2', natomiast oś Z reprezentuje poprawność klasyfikacji `PK'.
 Wykres jest zapisywany jako obraz z rozszerzeniem PNG.
-\subsection{Skrypt dla zależności poprawności klasyfikacji od liczby warstw oraz współczynnika uczenia}
+\subsection{Skrypt dla zależności poprawności klasyfikacji od liczby warstw oraz współczynnika uczenia [6]}
 \begin{verbatim}
 class Model(nn.Module):
     def __init__(self, input_dim, output_dim, K):
@@ -549,6 +549,34 @@ Kolejny eksperyment to zweryfikuje.
 
 \subsection{Eksperyment 5}
 Eksperyment będzie analogiczny do poprzedniego, z tym że liczba epok wzrośnie do 3000.
+
+Przy liczbie warstw większej od 5 oraz współczynniku uczenia mniejszym od $10^-6$ sieć zachowuje się niestabilnie.
+Jest to podobne zjawisko do tego w poprzednim eksperymencie.
+Liczba epok nie ma tu zbyt wielkiego znaczenia.
+PK dla 9 warstw oraz LR 0.1 84 procent max
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth, keepaspectratio]{LR_LAYERS_3000ECHO.PNG}
+    \caption{Zależność poprawności klasyfikacji od liczby warstw i współczynniku uczenia}
+    \label{fig:lr_layers_2}
+\end{figure}
+
+\subsection{Eksperyment 6}
+Eksperyment ten sprawdzi co stanie się, gdy zwiększymy liczbę neuronów dla `K1' = 1500 oraz `K2' = 1000.
+Liczba epok zostanie przywrócona na 100.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth, keepaspectratio]{LR_LAYERS_1500_1000K1K2.PNG}
+    \caption{Zależność poprawności klasyfikacji od liczby warstw i współczynniku uczenia}
+    \label{fig:lr_layers_3}
+\end{figure}
+
+Okazało się, że wynik jest podobny.
+Przy liczbie warstw większej od 5 oraz współczynniku uczenia mniejszym od $10^-6$ sieć zachowuje się niestabilnie.
+Dla przeciwnych wartości dominuje identyczna wartość poprawności klasyfikacji tzn. 79.
+Dla LR: $0.001$, L warstw 4 PK 87
 
 \section{Wnioski}
 Na podstawie przeprowadzonych eksperymentów można było dostrzec różne zachowania sieci w zależności od dobranych parametrów.
