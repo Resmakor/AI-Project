@@ -507,7 +507,7 @@ ax.set_zlabel("PK")
 plt.savefig("Fig.1_PK_layers_lr_pytorch_parkinsons.png", bbox_inches="tight")
 plt.show()
 \end{verbatim}
-
+\newpage
 Względem poprzedniego skryptu, klasa Model uległa zmianie.
 Konstruktor tej klasy inicjalizuje kolejne warstwy sieci, na podstawie przekazanej listy `K'.
 Lista `K' zawiera liczbę neuronów dla poszczególnych warstw.
@@ -578,6 +578,7 @@ W kodzie pojawiła się również lista `activations', która zawiera funkcje ak
 Dalsza część skryptu polega na iteracji po tej liście.
 Obliczana jest maksymalna poprawność klasyfikacji w zależności od użytej funkcji aktywacji oraz na końcu rysowany jest wykres tej zależności.
 
+\newpage
 \section{Eksperymenty}
 Dla każdego eksperymentu został użyty nieco inny skrypt.
 Pierwsze eksperymenty dotyczą rozmiaru warstw dla sieci trójwarstwowej, natomiast kolejne dotyczą zmian współczynniku uczenia, liczby warstw oraz funkcji przejścia.
@@ -732,8 +733,19 @@ Wynika z tego, że dla tych parametrów, dla warstw ukrytych najlepiej użyć fu
 \newpage
 \section{Wnioski}
 Na podstawie przeprowadzonych eksperymentów można było dostrzec różne zachowania sieci w zależności od dobranych parametrów.
-Parametry można było dobrać w taki sposób, że liczba neuronów w sieci nie miała dużego wpływu na poprawność klasyfikacji.
-Miała jednak ogromny wpływ jeżeli chodzi o szybkość nauki, gdyż m.in. w eksperymencie drugim na koniec działania skryptu czas oczekiwania wzrósł kilkunastokrotnie względem pierwszego.
+Parametry można było dobrać w taki sposób, że rozmiar warstw w sieci nie miał dużego wpływu na poprawność klasyfikacji, która utrzymywała się na podobnym poziomie.
+Liczba neuronów w warstwie miała jednak ogromny wpływ jeżeli chodzi o szybkość nauki. Po zwiększeniu tej liczby w eksperymencie drugim, na koniec działania skryptu czas oczekiwania wzrósł kilkunastokrotnie względem pierwszego.
+
+Dzięki kolejnym eksperymentom można było zauważyć, że zmniejszanie współczynnika uczenia ma tendencję do zmniejszania stabilności sieci.
+Można wyciągnąć wniosek, że optymalne wyniki sieć uzyskiwała dla umiarkowanych wartości współczynnika uczenia.
+
+Następne eksperymenty wykazały, że dla pewnych metaparametrów, wybór funkcji aktywacji ma istotny wpływ na poprawność klasyfikacji.
+Najlepsze wyniki osiągnięto przy użyciu funkcji ReLU lub funkcji sigmoidalnej.
+Należy jednak pamiętać, że dla różnych kombinacji liczby warstw i neuronów wyniki mogą być zgoła inne.
+
+Podsumowując, w większości przypadków rozmiar warstw, współczynnik uczenia, liczba warstw oraz funkcja aktywacji mają wpływ na działanie sieci.
+Optymalne wartości tych parametrów będą różnić się w zależności od konkretnego zadania i zbioru danych.
+Aby wybrać optymalne wartości wyżej wymienionych parametrów należy przeprowadzić wiele eksperymentów i dokładnie przeanalizować ich wyniki.
 
 \newpage
 \begin{thebibliography}{9}
