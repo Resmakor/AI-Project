@@ -17,8 +17,8 @@
 \pagebreak
 
 
-
 \tableofcontents{}
+\newpage
 \section{Opis projektu}
 \subsection{Założenia projektowe}
 Celem projektu jest realizacja sieci neuronowej uczonej za pomocą algorytmu sieci głębokiej, klasyfikującej chorobę Parkinsona oraz zbadanie wpływu parametrów sieci na proces uczenia.
@@ -63,6 +63,7 @@ Podstawowym elementem budującym strukturę sieci neuronowej jest neuron. Jest t
 W pewnym, uproszczonym stopniu jest wzorowany na funkcjonowaniu biologicznej komórki nerwowej.
 Struktura neuronu zawiera wiele wejść oraz jedno wyjście.
 Jednym z najważniejszych składników neuronu są wagi, których wartości decydują o zachowaniu neuronu. Są one zazwyczaj ustalane w trakcie procesu uczenia.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth, keepaspectratio]{model_neuronu.png}
@@ -128,9 +129,11 @@ gdzie:
     \item \(\sum_{j=1}^{n} e^{z_j}\) -- suma funkcji wykładniczych dla wszystkich elementów wektora wyników,
     \item \(n\) -- liczba klas.
 \end{itemize}
+
 Kolejną funkcją aktywacji jest funkcja sigmoidalna.
 Analogicznie do funkcji softmax, została użyta do aktywacji warstwy wyjściowej.
 Funkcja sigmoidalna przekształca wartość wejściową na wartość z zakresu (0, 1), co czyni ją przydatną w problemach klasyfikacji binarnej.
+
 Matematycznie funkcję sigmoidalną można zdefiniować jako:
 \[
     f(x) = \frac{1}{1 + e^{-x}}
@@ -153,6 +156,7 @@ Warto wspomnieć o tym, że ta funkcja jest bardziej wrażliwa na duże wartośc
 Sieci głębokie to rodzaj modeli uczenia maszynowego, które składają się z wielu warstw neuronów, zwanych warstwami głębokimi.
 Uczenie sieci głębokich opiera się na zasadzie propagacji wstecznej, która jest jednym z kluczowych algorytmów używanych do dostosowania wag sieci neuronowej w procesie uczenia.
 Propagacja wsteczna umożliwia obliczenie gradientów wag sieci na podstawie funkcji kosztu i propaguje te gradienty wstecz przez sieć, aby zaktualizować wagi w celu minimalizacji błędu.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth, keepaspectratio]{siec_gleboka.png}
@@ -243,10 +247,13 @@ gdzie:
     \item \(\hat{m}_t\) i \(\hat{v}_t\) to wygładzone estymacje momentu i drugiego momentu.
     \item \(W_{t}\) i \(W_{t+1}\) to wagi w krokach czasowych \(t\) i \(t+1\).
 \end{itemize}
+
 Przy użyciu tych wzorów, w metodzie optymalizacji ADAM aktualizuje się wagi sieci neuronowej, wykorzystując estymację momentu i drugiego momentu gradientu.
 To pozwala na efektywną optymalizację sieci głębokiej, dostosowując krok uczenia (learning rate) dla każdej wagi indywidualnie.
+
 \section{Realizacja sieci neuronowej}
 \subsection{Opis skryptu}
+
 Główny skrypt został podzielony na kilka innych w zależności od zastosowania.
 Każdy z nich dotyczy tego jak zmienia się poprawność klasyfikacji w zależności od różnych parametrów.
 Wszystkie skrypty mają taką samą wspólną, początkową część, która zawiera przetwarzanie danych zawartych w pliku `parkinsons.txt'.
@@ -254,6 +261,7 @@ Dane podlegają normalizacji, sortowaniu i zapisaniu do pliku `parkinsons.hkl'.
 Następnie dane wejściowe są skalowane i dzielone na zbiór treningowy oraz testowy.
 Wektory `y' są przekształcane tak, aby indeks pierwszej klasy wynosił 0.
 Dalsza część kodu jest inna dla każdego ze skryptów.
+
 \subsection{Początek każdego ze skryptów [5]}
 \begin{verbatim}
     from torch.autograd import Variable
@@ -320,6 +328,7 @@ Dalsza część kodu jest inna dla każdego ze skryptów.
         X_scaled, y, test_size=0.2, random_state=2
     )
 \end{verbatim}
+
 \subsection{Skrypt dla zależności poprawności klasyfikacji od liczby neuronów w warstwach [6]}
 \begin{verbatim}
     class Model(nn.Module):
@@ -394,6 +403,7 @@ W konstruktorze klasy zostaje zdefiniowana struktura modelu, tzn. warstwy liniow
 W klasie zostaje również zdefiniowana metoda `forward', która definiuje przepływ danych przez model.
 Metoda wykorzystuje funkcje aktywacji ReLU oraz funkcję softmax na ostatniej warstwie.
 Później następuje definicja parametrów uczenia, których definicja znajduje się poniżej:
+
 \begin{itemize}
     \item \texttt{lr\_vec} -- wektor współczynników uczenia,
     \item \texttt{K1\_vec} oraz \texttt{K2\_vec} -- wektory, które odpowiadają rozmiarom warstw w modelu. Generowane są przy wykorzystaniu \texttt{np.arange},
@@ -412,6 +422,7 @@ Po zakończeniu treningu, obliczana jest ocena `PK' dla danych testowych.
 Jeżeli aktualna poprawność klasyfikacji jest większa od dotychczasowej, maksymalnej, aktualizowane są odpowiednie zmienne.
 Na końcu skryptu, tworzony jest wykres 3D, w którym oś X reprezentuje `K1', oś Y reprezentuje `K2' oraz oś Z reprezentuje poprawność klasyfikacji `PK'.
 Wykres jest zapisywany jako obraz z rozszerzeniem PNG.
+
 \subsection{Skrypt dla zależności poprawności klasyfikacji od liczby warstw oraz współczynnika uczenia [6]}
 \begin{verbatim}
 class Model(nn.Module):
@@ -488,12 +499,14 @@ ax.set_zlabel('PK')
 plt.savefig("Fig.1_PK_layers_lr_pytorch_parkinsons.png", bbox_inches="tight")
 plt.show()
 \end{verbatim}
+
 Względem poprzedniego skryptu, klasa Model uległa zmianie.
 Konstruktor tej klasy inicjalizuje kolejne warstwy sieci, na podstawie przekazanej listy `K'.
 Lista `K' zawiera liczbę neuronów dla poszczególnych warstw.
 Występują również dwie zagnieżdżone pętle, które iterują po liczbie warstw z zakresu 3 - 10 oraz po współczynniku uczenia z zakresu $10^-1$ - $10^-7$.
 Założono, że liczba neuronów w danej warstwie będzie wynosić `K1', jeżeli numer warstwy jest parzysty oraz `K2' w przeciwnym wypadku.
 Na końcu rysowany jest wykres zależności poprawności klasyfikacji od liczby warstw sieci i współczynniku uczenia.
+
 \subsection{Skrypt dla zależności poprawności klasyfikacji od liczby warstw oraz współczynnika uczenia [6]}
 \begin{verbatim}
 class Model(nn.Module):
@@ -550,55 +563,64 @@ ax.set_xlabel('Funkcja aktywacji')
 ax.set_ylabel('PK')
 plt.savefig("Fig.2_PK_activations_pytorch_parkinsons.png", bbox_inches="tight")
 plt.show()
-
 \end{verbatim}
 
 Konstruktor klasy `Model' został uzupełniony o przekazywaną funkcję aktywacji.
 W kodzie pojawiła się również lista `activations', która zawiera funkcje aktywacji takie jak ReLU, tangens hiperboliczny oraz funkcję sigmoidalną.
 Dalsza część skryptu polega na iteracji po tej liście.
 Obliczana jest maksymalna poprawność klasyfikacji w zależności od użytej funkcji aktywacji oraz na końcu rysowany jest wykres tej zależności.
+
 \section{Eksperymenty}
 Dla każdego eksperymentu został użyty nieco inny skrypt.
 Pierwsze eksperymenty dotyczą rozmiaru warstw dla sieci trójwarstwowej, natomiast kolejne dotyczą zmian współczynniku uczenia, liczby warstw oraz funkcji przejścia.
 \subsection{Eksperyment 1}
+
 Eksperyment pierwszy został przeprowadzony dla przykładowych liczb neuronów będących wielokrotnościami liczby 2.
 Warstwy pierwsza i druga zawierają liczbę neuronów z zakresu 2 - 30.
 Współczynnik uczenia wynosi $0.1$, natomiast liczba epok to $100$.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth, keepaspectratio]{k1_k2_1.png}
     \caption{Zależność poprawności klasyfikacji od liczby neuronów z zakresu 2-30 z krokiem 2}
     \label{fig:k1k2_1}
 \end{figure}
+
 Dla danych metaparametrów wykres jest płaski.
 Poza punktami dla małej liczby neuronów w warstwie K2, dominującą wartością poprawności klasyfikacji jest $79.48\%$.
 Oznacza, to że rozmiary warstw mogą mieć minimalny wpływ na wydajność sieci dla takich metaparametrów.
 Powyższa hipoteza zostanie zweryfikowana w drugim eksperymencie.
 Semioptymalne wartości to: `K1' = 6, `K2' = 4, PK(K1, K2) = $87.17\%$.
+
 \subsection{Eksperyment 2}
 Tym razem warstwa pierwsza i druga zawierają liczbę neuronów z zakresu 2 - 200.
 Pozostałe parametry są niezmienione.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth, keepaspectratio]{k1_k2_2.png}
     \caption{Zależność poprawności klasyfikacji od liczby neuronów z zakresu 2-200 z krokiem 2}
     \label{fig:k1k2_2}
 \end{figure}
+
 Sieć uczyła się zdecydowanie dłużej.
 Okazało się jednak, że hipoteza z eksperymentu pierwszego jest prawdziwa.
 Wykres jest płaski również dla większej liczby neuronów.
 Minimalnie wzrosła maksymalna poprawność klasyfikacji z $87.17\%$ do $92.30\%$ dla K1 = 90 oraz K2 = 8.
+
 \subsection{Eksperyment 3}
 Plan trzeciego eksperymentu zakłada poszukiwanie takich metaparametrów aby wzbogacić wykres o większą głębię.
 Zmienione zostaną pozostałe parametry, nie tylko liczba neuronów w danej warstwie.
 Tym razem współczynnik uczenia będzie wynosić $0.001$, a maksymalna liczba epok to $1000$.
 Warstwa pierwsza i druga będą zawierać liczbę neuronów z zakresu 10 - 400 z krokiem 10.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth, keepaspectratio]{k1_k2_3.png}
     \caption{Zależność poprawności klasyfikacji od liczby neuronów z zakresu 10-400 z krokiem 10}
     \label{fig:k1k2_3}
 \end{figure}
+
 Jak widać na powyższym rysunku, sieć zachowuje się chaotycznie utrzymując jednak wciąż dosyć wysoki poziom poprawności klasyfikacji.
 Dla takich parametrów wykres nie jest już tak płaski jak w poprzednich eksperymentach.
 \subsection{Eksperyment 4}
@@ -606,6 +628,7 @@ Eksperyment czwarty będzie polegał na zmianie liczby warstw oraz współczynni
 W tym celu użyto innego skryptu niż ten wykorzystany w poprzednich eksperymentach.
 Liczba neuronów wynosi 6, jeżeli indeks warstwy jest parzysty oraz 4 w przeciwnym wypadku.
 Liczba epok została ustawiona na 100, a maksymalna liczba warstw, na których będą przeprowadzane testy, wynosi 10.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth, keepaspectratio]{LR_LAYERS_100ECHO.PNG}
@@ -627,6 +650,7 @@ Eksperyment będzie przeprowadzony w sposób analogiczny do poprzedniego, ale li
     \caption{Zależność poprawności klasyfikacji od liczby warstw i współczynniku uczenia}
     \label{fig:lr_layers_2}
 \end{figure}
+
 Przy liczbie warstw większej od 5 oraz współczynniku uczenia mniejszym od $10^-6$ sieć wykazuje niestabilne zachowanie.
 To zjawisko jest podobne do obserwowanego w poprzednim eksperymencie.
 Liczba epok nie ma tu zbyt wielkiego znaczenia.
