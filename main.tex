@@ -430,7 +430,7 @@ class Model(nn.Module):
         super(Model, self).__init__()
         layers = [nn.Linear(input_dim, K[0])]
         for i in range(len(K) - 1):
-            layers.append(nn.Linear(K[i], K[i+1]))
+            layers.append(nn.Linear(K[i], K[i + 1]))
         layers.append(nn.Linear(K[-1], output_dim))
         self.layers = nn.ModuleList(layers)
 
@@ -439,7 +439,7 @@ class Model(nn.Module):
             x = F.relu(layer(x))
         x = F.sigmoid(self.layers[-1](x))
         return x
-    
+
 lr_vec = np.array([1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7])
 K1 = 6
 K2 = 4
@@ -479,7 +479,11 @@ for lr_ind in range(len(lr_vec)):
             y_pred = model(X_test)
             correct = (torch.argmax(y_pred, dim=1) == y_test).type(torch.FloatTensor)
             PK = correct.mean().item() * 100
-            print("LR {} | K1 {} | K2 {} | PK {} | layers {} | layers_count {} ".format(lr_vec[lr_ind], K1, K2, PK, layers, len(layers)))
+            print(
+                "LR {} | K1 {} | K2 {} | PK {} | layers {} | layers_count {} ".format(
+                    lr_vec[lr_ind], K1, K2, PK, layers, len(layers)
+                )
+            )
             PK_3D_K[lr_ind, i - 3] = PK
 
         if PK > PK_max:
@@ -487,15 +491,19 @@ for lr_ind in range(len(lr_vec)):
             lr_max_ind = lr_ind
             layers_for_max_PK = len(layers)
 
-print("Max PK: {} for LR: {} | K1: {} | K2: {} | layers_count {} ".format(PK_max, lr_vec[lr_max_ind], K1, K2, layers_for_max_PK))
-PK_3D_K = PK_3D_K[:, :max_layers-2]
+print(
+    "Max PK: {} for LR: {} | K1: {} | K2: {} | layers_count {} ".format(
+        PK_max, lr_vec[lr_max_ind], K1, K2, layers_for_max_PK
+    )
+)
+PK_3D_K = PK_3D_K[:, : max_layers - 2]
 fig = plt.figure(figsize=(8, 8))
-ax = fig.add_subplot(111, projection='3d')
+ax = fig.add_subplot(111, projection="3d")
 Y, X = np.meshgrid(np.log10(lr_vec), np.array([range(3, max_layers + 1)]))
-ax.plot_surface(X, Y, PK_3D_K.T, cmap='viridis')
-ax.set_xlabel('Liczba warstw')
-ax.set_ylabel('Współczynnik uczenia (10^x)')
-ax.set_zlabel('PK')
+ax.plot_surface(X, Y, PK_3D_K.T, cmap="viridis")
+ax.set_xlabel("Liczba warstw")
+ax.set_ylabel("Współczynnik uczenia (10^x)")
+ax.set_zlabel("PK")
 plt.savefig("Fig.1_PK_layers_lr_pytorch_parkinsons.png", bbox_inches="tight")
 plt.show()
 \end{verbatim}
