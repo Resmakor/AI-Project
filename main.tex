@@ -127,7 +127,7 @@ gdzie:
     \item \(\sum_{j=1}^{n} e^{z_j}\) -- suma funkcji wykładniczych dla wszystkich elementów wektora wyników,
     \item \(n\) -- liczba klas.
 \end{itemize}
-Ostatnią funkcją aktywacji, którą wykorzystałem, jest funkcja sigmoidalna.
+Kolejną funkcją aktywacji jest funkcja sigmoidalna.
 Analogicznie do funkcji softmax, została użyta do aktywacji warstwy wyjściowej.
 Funkcja sigmoidalna przekształca wartość wejściową na wartość z zakresu (0, 1), co czyni ją przydatną w problemach klasyfikacji binarnej.
 Matematycznie funkcję sigmoidalną można zdefiniować jako:
@@ -138,8 +138,18 @@ gdzie:
 \begin{itemize}
     \item \(x\) -- wartość wejściowa do funkcji sigmoidalnej,
     \item \(e\) --  podstawa logarytmu naturalnego, przybliżone do wartości 2.71828,
-    \item \(f(x)\) -- to wartość wyjściowa funkcji sigmoidalnej, przekształcająca \(x\) na wartość z przedziału (0, 1).
+    \item \(f(x)\) -- wartość wyjściowa funkcji sigmoidalnej, przekształcająca \(x\) na wartość z przedziału (0, 1).
 \end{itemize}
+Ostatnią funkcją aktywacji, którą wykorzystałem jest tangens hiperboliczny.
+Funkcja ta może zostać użyta zarówno do warstw ukrytych jak i warstwy ostatniej.
+Funkcję można zdefiniować w następujący sposób:
+
+\[\text{tanh}(x) = \frac{{\exp(x) - \exp(-x)}}{{\exp(x) + \exp(-x)}}\]
+
+Wartości tej funkcji mieszczą się w zakresie (-1; 1).
+Funkcja kształtem przypomina funkcję sigmoidalną.
+Warto wspomnieć o tym, że ta funkcja jest bardziej wrażliwa na duże wartości wejściowe niż funkcja sigmoidalna, co może prowadzić do problemów z gradientem w czasie uczenia sieci.
+
 \subsection{Sieć głęboka}
 Sieci głębokie to rodzaj modeli uczenia maszynowego, które składają się z wielu warstw neuronów, zwanych warstwami głębokimi.
 Uczenie sieci głębokich opiera się na zasadzie propagacji wstecznej, która jest jednym z kluczowych algorytmów używanych do dostosowania wag sieci neuronowej w procesie uczenia.
