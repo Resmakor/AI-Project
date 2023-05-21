@@ -21,7 +21,7 @@
 \newpage
 \section{Opis projektu}
 \subsection{Założenia projektowe}
-Celem projektu jest realizacja sieci neuronowej uczonej za pomocą algorytmu sieci głębokiej, klasyfikującej chorobę Parkinsona oraz zbadanie wpływu parametrów sieci na proces uczenia.
+Celem projektu jest realizacja sieci neuronowej uczonej za pomocą sieci głębokiej, klasyfikującej chorobę Parkinsona oraz zbadanie wpływu parametrów sieci na proces uczenia.
 Projekt został zrealizowany w języku Python z wykorzystaniem biblioteki PyTorch.
 \subsection{Zestaw danych}
 Zestaw danych uczących został pobrany ze strony \href{http://archive.ics.uci.edu/ml/datasets/Parkinsons}{http://archive.ics.uci.edu/ml/datasets/Parkinsons}.
@@ -132,8 +132,7 @@ gdzie:
 \end{itemize}
 
 Kolejną funkcją aktywacji jest funkcja sigmoidalna.
-Analogicznie do funkcji softmax, została użyta do aktywacji warstwy wyjściowej.
-Funkcja sigmoidalna przekształca wartość wejściową na wartość z zakresu (0, 1), co czyni ją przydatną w problemach klasyfikacji binarnej.
+Funkcja sigmoidalna przekształca wartość wejściową na wartość z zakresu (0; 1), co czyni ją przydatną w problemach klasyfikacji binarnej.
 
 Matematycznie funkcję sigmoidalną można zdefiniować jako:
 \[
@@ -143,7 +142,7 @@ gdzie:
 \begin{itemize}
     \item \(x\) -- wartość wejściowa do funkcji sigmoidalnej,
     \item \(e\) --  podstawa logarytmu naturalnego, przybliżone do wartości 2.71828,
-    \item \(f(x)\) -- wartość wyjściowa funkcji sigmoidalnej, przekształcająca \(x\) na wartość z przedziału (0, 1).
+    \item \(f(x)\) -- wartość wyjściowa funkcji sigmoidalnej, przekształcająca \(x\) na wartość z przedziału (0; 1).
 \end{itemize}
 
 Ostatnią funkcją aktywacji, którą wykorzystałem jest tangens hiperboliczny.
@@ -215,7 +214,7 @@ Na podstawie gradientu aktualizowane są wagi sieci przy użyciu odpowiedniej me
 \subsection{Metoda optymalizacji ADAM}
 Metoda ADAM jest popularna w optymalizacji sieci głębokich, ponieważ łączy zalety adaptacyjnego skalowania kroku uczenia (RMSProp) i momentu, co prowadzi do efektywniejszej optymalizacji i szybszego zbiegania do optymalnych wag sieci.
 
-Aby obliczyć gradient funkcji kosztu, należy obliczyć pochodne cząstkowe dla każdej warstwy, od ostatniej warstwy do pierwszej.
+Aby obliczyć gradient funkcji kosztu, należy obliczyć pochodne cząstkowe dla każdej warstwy, od ostatniej do pierwszej.
 W każdej warstwie oblicza się lokalny gradient na podstawie pochodnej funkcji kosztu oraz gradientu z poprzedniej warstwy.
 
 Wzór na gradient funkcji kosztu H, w kroku t:
@@ -242,12 +241,12 @@ Gradient jest używany do aktualizacji wag zgodnie z następującymi wzorami:
 \[ W_{t+1} = W_t - \frac{\eta}{\sqrt{\hat{v}_t} + \epsilon} \cdot \hat{m}_t \]
 gdzie:
 \begin{itemize}
-    \item \(m_t\) to estymacja momentu gradientu w kroku czasowym \(t\).
-    \item \(v_t\) to estymacja drugiego momentu gradientu w kroku czasowym \(t\).
-    \item \(\beta_1\) i \(\beta_2\) to współczynniki z zakresu \([0, 1)\) kontrolujące eksponencjalne wygładzanie momentu i drugiego momentu.
-    \item \(\alpha\) to współczynnik uczenia (learning rate).
-    \item \(\epsilon\) to mała wartość (np. \(10^{-10}\)) używana w celu uniknięcia dzielenia przez zero.
-    \item \(\hat{m}_t\) i \(\hat{v}_t\) to wygładzone estymacje momentu i drugiego momentu.
+    \item \(m_t\) to estymacja momentu gradientu w kroku czasowym \(t\),
+    \item \(v_t\) to estymacja drugiego momentu gradientu w kroku czasowym \(t\),
+    \item \(\beta_1\) i \(\beta_2\) to współczynniki z zakresu \([0; 1)\) kontrolujące eksponencjalne wygładzanie momentu i drugiego momentu,
+    \item \(\alpha\) to współczynnik uczenia,
+    \item \(\epsilon\) to mała wartość (np. \(10^{-10}\)) używana w celu uniknięcia dzielenia przez zero,
+    \item \(\hat{m}_t\) i \(\hat{v}_t\) to wygładzone estymacje momentu i drugiego momentu,
     \item \(W_{t}\) i \(W_{t+1}\) to wagi w krokach czasowych \(t\) i \(t+1\).
 \end{itemize}
 
@@ -392,8 +391,17 @@ for k1_ind in range(len(K1_vec)):
 
 Na początku skryptu zostaje zdefiniowana klasa `Model', która dziedziczy po module `nn.Module'.
 Jest to model sieci neuronowej.
+Jej konstruktor przyjmuje $4$ argumenty (rozmiar wejścia, rozmiar wyjścia, rozmiar warstwy pierwszej, rozmiar warstwy drugiej).
 W konstruktorze klasy zostaje zdefiniowana struktura modelu, tzn. warstwy liniowe `nn.Linear' i ich rozmiary.
+Pierwsza warstwa ma rozmiar `input\_dim' na `K1', druga warstwa `K1' na `K2', a trzecia `K2' na `output\_dim'.
+
 W klasie zostaje również zdefiniowana metoda `forward', która definiuje przepływ danych przez model.
+Przyjmuje jeden argument `x', który jest wejściem do modelu.
+Działanie tej metody polega na przekazywaniu wejścia `x' przez warstwę pierwszą, stosując następnie funkcję aktywacji ReLU.
+Wynik przekazywany jest do kolejnej warstwy i ponownie stosuje się tą samą funkcję aktywacji.
+Na końcu wynik jest przekazywany przez ostatnią warstwę i poddawany funkcji sigmoidalnej.
+Ostatecznie wynik jest zwracany jako wyjście modelu.
+
 Metoda wykorzystuje funkcje aktywacji ReLU oraz funkcję softmax na ostatniej warstwie.
 Później następuje definicja parametrów uczenia, których opis znajduje się poniżej:
 \begin{itemize}
@@ -403,14 +411,27 @@ Później następuje definicja parametrów uczenia, których opis znajduje się 
     \item \texttt{max\_epoch} -- oznacza maksymalną liczbę epok,
     \item \texttt{PK\_2D\_K1K2\_max} -- dotychczasowa maksymalna poprawność klasyfikacji,
     \item \texttt{k1\_ind\_max}, \texttt{k2\_ind\_max} -- indeksy kombinacji rozmiarów warstw odpowiednio \texttt{K1} oraz \texttt{K2}, dla których uzyskano najwyższą ocenę \texttt{PK\_2D\_K1K2\_max},
-    \item \texttt{X\_train}, \texttt{y\_train} -- dane treningowe,
-    \item \texttt{X\_test}, \texttt{y\_test} -- dane testowe.
+    \item \texttt{X\_train}, \texttt{y\_train} -- dane treningowe, przekształcone do zmiennych tensorowych,
+    \item \texttt{X\_test}, \texttt{y\_test} -- dane testowe, przekształcone do zmiennych tensorowych.
 \end{itemize}
 
 Zagnieżdżone pętle `for' iterują po rozmiarach `K1' oraz `K2'.
-Tworzony jest model z odpowiednimi rozmiarami warstw i definiowany jest optymalizator `ADAM' oraz funkcja kosztu.
-W pętli treningowej obliczane są predykcje modelu, strata oraz aktualizowane są wagi modelu.
-Po zakończeniu treningu, obliczana jest ocena `PK' dla danych testowych.
+Tworzony jest model z odpowiednimi rozmiarami warstw.
+Dwa pierwsze parametry przekazane do modelu to:
+\begin{itemize}
+    \item X\_train.shape[1] -- rozmiar wejścia (ilość cech) dla danych treningowych zwrócone jako krotka,
+    \item int(max(y) + 1) -- rozmiar wyjścia modelu, gdzie max(y) zwraca maksymalną wartość w wektorze etykiet `y'. Dodanie jedynki jest istotne, gdyż numery klas są indeksowane od zera. Po dodaniu jedynki liczba klas jest odzwierciedlona poprawnie.
+\end{itemize}
+
+
+Następnie definiowany jest optymalizator `ADAM' oraz funkcja kosztu.
+W pętli treningowej obliczane są predykcje modelu (`y\_pred') dla danych treningowych, wartość funkcji kosztu na podstawie przewidywań `y\_pred' i etykiet `y\_train'.
+Kolejnym krokiem jest zresetowanie gradientów optymalizatora (`optimizer\_zero\_grad()'), obliczenie gradientów funkcji straty (`loss.backward()') oraz zaktualizowanie wag modelu (`optimizer\_step()').
+
+Po zakończeniu treningu następuje część kodu, która wyłącza obliczanie gradientów dla testowania modelu (`with torch.no\_grad()').
+W tej części obliczane są przewidywane wartości `y\_pred' dla danych testowych.
+Następnie obliczana jest dokładność modelu na podstawie porównania przewidywanych etykiet z rzeczywistymi etykietami.
+Na końcu obliczana jest ocena `PK' dla danych testowych, na podstawie obliczonej dokładności.
 Jeżeli aktualna poprawność klasyfikacji jest większa od dotychczasowej, maksymalnej, aktualizowane są odpowiednie zmienne.
 
 \subsection{Główna część skryptu dla zależności poprawności klasyfikacji od liczby warstw oraz współczynnika uczenia [6]}
@@ -715,7 +736,7 @@ W eksperymencie pierwszym zaobserwowano, że dla określonych parametrów sieć 
 Jednakże, w porównaniu do pozostałych eksperymentów, w pierwszym eksperymencie osiągnięto najwyższą skuteczność klasyfikacji na poziomie około $94\%$.
 Ustawienia można było dobrać również w taki sposób, że rozmiar warstw w sieci nie miał dużego wpływu na poprawność klasyfikacji, która utrzymywała się na podobnym poziomie.
 Liczba neuronów w warstwie miała jednak ogromny wpływ jeżeli chodzi o szybkość nauki.
-Po zwiększeniu tej liczby w eksperymencie drugim oraz później w trzecim, na koniec działania skryptu czas oczekiwania wzrósł kilkunastokrotnie względem pierwszego.
+Po zwiększeniu tej liczby w eksperymencie drugim oraz później w trzecim, czas oczekiwania na koniec działania skryptu wzrósł kilkunastokrotnie względem pierwszego.
 
 Dzięki kolejnym eksperymentom można było zauważyć, że zmniejszanie współczynnika uczenia z jednoczesnym zwiększaniem liczby warstw ma tendencję do zmniejszania stabilności sieci.
 Można wyciągnąć wniosek, że optymalne wyniki sieć uzyskiwała dla umiarkowanych wartości współczynnika uczenia i liczby warstw.
@@ -732,7 +753,7 @@ Aby wybrać optymalne wartości wyżej wymienionych parametrów należy przeprow
 \section{Dodatki}
 \subsection{Pełna część kodu służącego do badania zależności PK od liczby neuronów K1 oraz K2}
 \begin{verbatim}
-    class Model(nn.Module):
+class Model(nn.Module):
     def __init__(self, input_dim, output_dim, K1, K2):
         super(Model, self).__init__()
         self.layer1 = nn.Linear(input_dim, K1)
@@ -889,7 +910,7 @@ plt.show()
 \newpage
 \subsection{Pełna część kodu służącego do badania zależności PK od użytej funkcji aktywacji}
 \begin{verbatim}
-    class Model(nn.Module):
+class Model(nn.Module):
     def __init__(self, input_dim, output_dim, K, activation):
         super(Model, self).__init__()
         layers = [nn.Linear(input_dim, K[0])]
