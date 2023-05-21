@@ -332,6 +332,20 @@ Dalsza część kodu jest inna dla każdego ze skryptów.
     )
 \end{verbatim}
 
+Na początku, przy użyciu funkcji `np.loadtxt()' wczytywane są dane z pliku `parkinsons.txt'.
+Tworzona jest macierz `x' poprzez konkatenację dwóch części z `data', aby pozbyć się niepotrzebnej kolumny.
+Później macierz `x' jest transponowana i konwertowana do typu `float'.
+Następnie tworzony jest wektor `y\_t' i zmieniany jest jego kształt na (1, liczba przykładów).
+Kolejno tworzona jest macierz, w której każdy wiersz zawiera indeks, minimalną wartość i maksymalną wartość dla odpowiadającego wiersza macierzy `x'.
+Kolejnym etapem jest normalizacja danych.
+Obliczane są minimalne oraz maksymalne wartości dla każego wiersza macierzy `x' za pomocą `x\_min = x.min(axis=1)' oraz `x\_max = x.max(axis=1)'.
+Później ustalane są minimalne i maksymalne wartości dla normalizacji (-1 oraz 0).
+Przeprowadzana jest następnie normalizacja dla każdego wiersza `x[i, :]', a wynik jest zapisywany do macierzy `x\_norm'.
+Wykonana zostaje również transpozycja macierzy, która tworzy macierz wynikową, gdzie każdy wiersz zawiera indeks, minimalną wartość i maksymalną wartość dla odpowiadającego wiersza macierzy `x\_norm'.
+
+Dalszym etapem jest stworzenie indeksów, które posortują wartości wektora `y\_t' w kolejności rosnącej.
+Utworzona zostaje macierz `x\_n\_s', o takim samym kształcie jak `x'. Zostanie użyta do przechowywania znormalizowanych danych po sortowaniu.
+Analogicznie zostaje utworzona macierz `y\_t\_s'
 \subsection{Główna część skryptu dla zależności poprawności klasyfikacji od liczby neuronów w warstwach [6]}
 \begin{verbatim}
 class Model(nn.Module):
@@ -431,6 +445,8 @@ Kolejnym krokiem jest zresetowanie gradientów optymalizatora (`optimizer\_zero\
 Po zakończeniu treningu następuje część kodu, która wyłącza obliczanie gradientów dla testowania modelu (`with torch.no\_grad()').
 W tej części obliczane są przewidywane wartości `y\_pred' dla danych testowych.
 Następnie obliczana jest dokładność modelu na podstawie porównania przewidywanych etykiet z rzeczywistymi etykietami.
+Wywołanie funkcji `torch.argmax(y\_pred, dim=1)' oblicza indeksy klas o najwyższych wartościach dla każdego przykładu w `y\_pred' wzdłuż określonego wymiaru (1), co oznacza drugi wymiar, czyli klasę.
+Indeksy porównywane są z rzeczywistymi etykietami `y\_test'.
 Na końcu obliczana jest ocena `PK' dla danych testowych, na podstawie obliczonej dokładności.
 Jeżeli aktualna poprawność klasyfikacji jest większa od dotychczasowej, maksymalnej, aktualizowane są odpowiednie zmienne.
 
@@ -510,7 +526,7 @@ print(
 
 \end{verbatim}
 \newpage
-Względem poprzedniego skryptu, klasa Model uległa zmianie.
+Względem poprzedniego skryptu, klasa `Model' uległa zmianie.
 Konstruktor tej klasy inicjalizuje kolejne warstwy sieci, na podstawie przekazanej listy `K'.
 Lista `K' zawiera liczbę neuronów dla poszczególnych warstw.
 Występują również dwie zagnieżdżone pętle, które iterują po liczbie warstw z zakresu 3 - 10 oraz po współczynniku uczenia z zakresu $10^{-1}$ - $10^{-7}$.
