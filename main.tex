@@ -21,23 +21,23 @@
 \newpage
 \section{Opis projektu}
 \subsection{Założenia projektowe}
-Celem projektu jest realizacja sieci neuronowej uczonej za pomocą sieci głębokiej, klasyfikującej chorobę Parkinsona oraz zbadanie wpływu parametrów sieci na proces uczenia.
+Celem projektu jest realizacja sieci neuronowej uczonej za pomocą algorytmu sieci głębokiej, klasyfikującej chorobę Parkinsona oraz zbadanie wpływu parametrów sieci na proces uczenia.
 Projekt został zrealizowany w języku Python z wykorzystaniem biblioteki PyTorch.
 \subsection{Zestaw danych}
 Zestaw danych uczących został pobrany ze strony \href{http://archive.ics.uci.edu/ml/datasets/Parkinsons}{http://archive.ics.uci.edu/ml/datasets/Parkinsons}.
 Zawiera on 197 instancji, 23 cechy oraz 2 klasy. Dane są nieuporządkowane, nie ma danych nieokreślonych.
 Dokładniejszy opis cech zestawu:
 \begin{itemize}
-    \item name - Nazwa badanego pacjenta w ASCII i numer nagrania.
-    \item MDVP:Fo(Hz) - Średnia częstotliwość podstawowa głosu.
-    \item MDVP:Fhi(Hz) - Maksymalna częstotliwość podstawowa głosu.
-    \item MDVP:Flo(Hz) - Minimalna częstotliwość podstawowa głosu.
-    \item MDVP:Jitter(\%), MDVP:Jitter(Abs), MDVP:RAP, MDVP:PPQ, Jitter:DDP - Kilka miar zmienności częstotliwości podstawowej.
-    \item MDVP:Shimmer, MDVP:Shimmer(dB), Shimmer:APQ3, Shimmer:APQ5, MDVP:APQ, Shimmer:DDA - Kilka miar zmienności amplitudy.
-    \item NHR, HNR - Dwie miary stosunku szumu do składowych tonalnych w głosie.
-    \item status - Stan zdrowia badanego (jeden) - chory na Parkinsona, (zero) - zdrowy.
-    \item RPDE, D2 - Dwie miary złożoności dynamicznej nieliniowej.
-    \item DFA - Wykładnik skalowania fraktalnego sygnału.
+    \item name - Nazwa badanego pacjenta w ASCII i numer nagrania,
+    \item MDVP:Fo(Hz) - Średnia częstotliwość podstawowa głosu,
+    \item MDVP:Fhi(Hz) - Maksymalna częstotliwość podstawowa głosu,
+    \item MDVP:Flo(Hz) - Minimalna częstotliwość podstawowa głosu,
+    \item MDVP:Jitter(\%), MDVP:Jitter(Abs), MDVP:RAP, MDVP:PPQ, Jitter:DDP - Kilka miar zmienności częstotliwości podstawowej,
+    \item MDVP:Shimmer, MDVP:Shimmer(dB), Shimmer:APQ3, Shimmer:APQ5, MDVP:APQ, Shimmer:DDA - Kilka miar zmienności amplitudy,
+    \item NHR, HNR - Dwie miary stosunku szumu do składowych tonalnych w głosie,
+    \item status - Stan zdrowia badanego (jeden) - chory na Parkinsona, (zero) - zdrowy,
+    \item RPDE, D2 - Dwie miary złożoności dynamicznej nieliniowej,
+    \item DFA - Wykładnik skalowania fraktalnego sygnału,
     \item spread1, spread2, PPE - Trzy nieliniowe miary zmienności częstotliwości podstawowej.
 \end{itemize}
 \subsection{Przygotowanie danych}
@@ -50,11 +50,11 @@ Normalizacja została wykonana dla każdej obserwacji przy użyciu wzoru:
 
 gdzie:
 \begin{itemize}
-    \item $x_{min}$ - to wektor zawierający minimalne wartości dla każdej obserwacji.
-    \item $x_{max}$ - to wektor zawierający maksymalne wartości dla każdej obserwacji.
-    \item $x_{norm\_min}$ - to wartość minimalna po normalizacji (-1).
-    \item $x_{norm\_max}$ - to wartość maksymalna po normalizacji (1).
-    \item $x_{norm}$ - to macierz zawierająca znormalizowane dane.
+    \item $x_{min}$ - to wektor zawierający minimalne wartości dla każdej obserwacji,
+    \item $x_{max}$ - to wektor zawierający maksymalne wartości dla każdej obserwacji,
+    \item $x_{norm\_min}$ - to wartość minimalna po normalizacji (-1),
+    \item $x_{norm\_max}$ - to wartość maksymalna po normalizacji (1),
+    \item $x_{norm}$ - to macierz zawierająca znormalizowane dane,
     \item $x$ - to macierz zawierająca dane wejściowe.
 \end{itemize}
 \newpage
@@ -433,14 +433,14 @@ Ostatecznie wynik jest zwracany jako wyjście modelu.
 Metoda wykorzystuje funkcje aktywacji ReLU oraz funkcję softmax na ostatniej warstwie.
 Później następuje definicja parametrów uczenia, których opis znajduje się poniżej:
 \begin{itemize}
-    \item \texttt{lr\_vec} -- wektor współczynników uczenia,
-    \item \texttt{K1\_vec} oraz \texttt{K2\_vec} -- wektory, które odpowiadają rozmiarom warstw w modelu. Generowane są przy wykorzystaniu \texttt{np.arange},
-    \item \texttt{PK\_2D\_K1K2} -- macierz, która będzie przechowywać wyniki ocenu modelu dla różnych kombinacji,
-    \item \texttt{max\_epoch} -- oznacza maksymalną liczbę epok,
-    \item \texttt{PK\_2D\_K1K2\_max} -- dotychczasowa maksymalna poprawność klasyfikacji,
-    \item \texttt{k1\_ind\_max}, \texttt{k2\_ind\_max} -- indeksy kombinacji rozmiarów warstw odpowiednio \texttt{K1} oraz \texttt{K2}, dla których uzyskano najwyższą ocenę \texttt{PK\_2D\_K1K2\_max},
-    \item \texttt{X\_train}, \texttt{y\_train} -- dane treningowe, przekształcone do zmiennych tensorowych,
-    \item \texttt{X\_test}, \texttt{y\_test} -- dane testowe, przekształcone do zmiennych tensorowych.
+    \item lr\_vec -- wektor współczynników uczenia,
+    \item K1\_vec oraz K2\_vec -- wektory, które odpowiadają rozmiarom warstw w modelu. Generowane są przy wykorzystaniu \texttt{np.arange},
+    \item PK\_2D\_K1K2 -- macierz, która będzie przechowywać wyniki ocenu modelu dla różnych kombinacji,
+    \item max\_epoch -- oznacza maksymalną liczbę epok,
+    \item PK\_2D\_K1K2\_max -- dotychczasowa maksymalna poprawność klasyfikacji,
+    \item k1\_ind\_max, k2\_ind\_max -- indeksy kombinacji rozmiarów warstw odpowiednio \texttt{K1} oraz \texttt{K2}, dla których uzyskano najwyższą ocenę \texttt{PK\_2D\_K1K2\_max},
+    \item X\_train, y\_train -- dane treningowe, przekształcone do zmiennych tensorowych,
+    \item X\_test, y\_test -- dane testowe, przekształcone do zmiennych tensorowych.
 \end{itemize}
 
 Zagnieżdżone pętle `for' iterują po rozmiarach `K1' oraz `K2'.
