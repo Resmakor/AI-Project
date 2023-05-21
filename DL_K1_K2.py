@@ -81,7 +81,7 @@ class Model(nn.Module):
 
 
 lr_vec = np.array([1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7])
-K1_vec = np.arange(2, 30, 2)
+K1_vec = np.arange(100, 1000, 100)
 K2_vec = K1_vec
 PK_2D_K1K2 = np.zeros([len(K1_vec), len(K2_vec)])
 max_epoch = 100
@@ -103,9 +103,9 @@ for k1_ind in range(len(K1_vec)):
             y_pred = model(X_train)
             loss = loss_fn(y_pred, y_train)
 
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
 
         with torch.no_grad():
             y_pred = model(X_test)
