@@ -81,10 +81,10 @@ class Model(nn.Module):
 
 
 lr_vec = np.array([1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7])
-K1_vec = np.arange(100, 1000, 100)
+K1_vec = np.arange(2, 30, 2)
 K2_vec = K1_vec
 PK_2D_K1K2 = np.zeros([len(K1_vec), len(K2_vec)])
-max_epoch = 100
+max_epoch = 1000
 PK_2D_K1K2_max = 0
 k1_ind_max = 0
 k2_ind_max = 0
