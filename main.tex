@@ -333,9 +333,9 @@ Dalsza część kodu jest inna dla każdego ze skryptów.
     )
 \end{verbatim}
 
-\subsection{Skrypt dla zależności poprawności klasyfikacji od liczby neuronów w warstwach [6]}
+\subsection{Główna część skryptu dla zależności poprawności klasyfikacji od liczby neuronów w warstwach [6]}
 \begin{verbatim}
-    class Model(nn.Module):
+class Model(nn.Module):
     def __init__(self, input_dim, output_dim, K1, K2):
         super(Model, self).__init__()
         self.layer1 = nn.Linear(input_dim, K1)
@@ -388,17 +388,6 @@ for k1_ind in range(len(K1_vec)):
             PK_2D_K1K2_max = PK
             k1_ind_max = k1_ind
             k2_ind_max = k2_ind
-
-print(K1_vec[k1_ind_max], K2_vec[k2_ind_max], PK_2D_K1K2_max)
-fig = plt.figure(figsize=(8, 8))
-ax = fig.add_subplot(111, projection="3d")
-X, Y = np.meshgrid(K1_vec, K2_vec)
-surf = ax.plot_surface(X, Y, PK_2D_K1K2.T, cmap="viridis")
-ax.set_xlabel("K1")
-ax.set_ylabel("K2")
-ax.set_zlabel("PK")
-ax.view_init(30, 200)
-plt.savefig("Fig.1_PK_K1K2_pytorch_parkinsons.png", bbox_inches="tight")
 \end{verbatim}
 
 Na początku skryptu zostaje zdefiniowana klasa `Model', która dziedziczy po module `nn.Module'.
@@ -406,8 +395,7 @@ Jest to model sieci neuronowej.
 W konstruktorze klasy zostaje zdefiniowana struktura modelu, tzn. warstwy liniowe `nn.Linear' i ich rozmiary.
 W klasie zostaje również zdefiniowana metoda `forward', która definiuje przepływ danych przez model.
 Metoda wykorzystuje funkcje aktywacji ReLU oraz funkcję softmax na ostatniej warstwie.
-Później następuje definicja parametrów uczenia, których definicja znajduje się poniżej:
-
+Później następuje definicja parametrów uczenia, których opis znajduje się poniżej:
 \begin{itemize}
     \item \texttt{lr\_vec} -- wektor współczynników uczenia,
     \item \texttt{K1\_vec} oraz \texttt{K2\_vec} -- wektory, które odpowiadają rozmiarom warstw w modelu. Generowane są przy wykorzystaniu \texttt{np.arange},
@@ -424,10 +412,8 @@ Tworzony jest model z odpowiednimi rozmiarami warstw i definiowany jest optymali
 W pętli treningowej obliczane są predykcje modelu, strata oraz aktualizowane są wagi modelu.
 Po zakończeniu treningu, obliczana jest ocena `PK' dla danych testowych.
 Jeżeli aktualna poprawność klasyfikacji jest większa od dotychczasowej, maksymalnej, aktualizowane są odpowiednie zmienne.
-Na końcu skryptu, tworzony jest wykres 3D, w którym oś X reprezentuje `K1', oś Y reprezentuje `K2' oraz oś Z reprezentuje poprawność klasyfikacji `PK'.
-Wykres jest zapisywany jako obraz z rozszerzeniem PNG.
 
-\subsection{Skrypt dla zależności poprawności klasyfikacji od liczby warstw oraz współczynnika uczenia [6]}
+\subsection{Główna część skryptu dla zależności poprawności klasyfikacji od liczby warstw oraz współczynnika uczenia [6]}
 \begin{verbatim}
 class Model(nn.Module):
     def __init__(self, input_dim, output_dim, K):
@@ -500,16 +486,7 @@ print(
         PK_max, lr_vec[lr_max_ind], K1, K2, layers_for_max_PK
     )
 )
-PK_3D_K = PK_3D_K[:, : max_layers - 2]
-fig = plt.figure(figsize=(8, 8))
-ax = fig.add_subplot(111, projection="3d")
-Y, X = np.meshgrid(np.log10(lr_vec), np.array([range(3, max_layers + 1)]))
-ax.plot_surface(X, Y, PK_3D_K.T, cmap="viridis")
-ax.set_xlabel("Liczba warstw")
-ax.set_ylabel("Współczynnik uczenia (10^x)")
-ax.set_zlabel("PK")
-plt.savefig("Fig.1_PK_layers_lr_pytorch_parkinsons.png", bbox_inches="tight")
-plt.show()
+
 \end{verbatim}
 \newpage
 Względem poprzedniego skryptu, klasa Model uległa zmianie.
@@ -517,9 +494,8 @@ Konstruktor tej klasy inicjalizuje kolejne warstwy sieci, na podstawie przekazan
 Lista `K' zawiera liczbę neuronów dla poszczególnych warstw.
 Występują również dwie zagnieżdżone pętle, które iterują po liczbie warstw z zakresu 3 - 10 oraz po współczynniku uczenia z zakresu $10^{-1}$ - $10^{-7}$.
 Założono, że liczba neuronów w danej warstwie będzie wynosić `K1', jeżeli numer warstwy jest parzysty oraz `K2' w przeciwnym wypadku.
-Na końcu rysowany jest wykres zależności poprawności klasyfikacji od liczby warstw sieci i współczynniku uczenia.
 
-\subsection{Skrypt dla zależności poprawności klasyfikacji od liczby warstw oraz współczynnika uczenia [6]}
+\subsection{Główna część skryptu dla zależności poprawności klasyfikacji od użytej funkcji aktywacji [6]}
 \begin{verbatim}
 class Model(nn.Module):
     def __init__(self, input_dim, output_dim, K, activation):
@@ -568,19 +544,12 @@ for activation in activations:
         PK_activations.append(PK)
         print("PK {} FUNCTION {}".format(PK, activation))
 
-fig = plt.figure(figsize=(8, 8))
-ax = fig.add_subplot()
-ax.bar(['ReLU', 'Tanh', 'Sigmoid'], PK_activations)
-ax.set_xlabel('Funkcja aktywacji')
-ax.set_ylabel('PK')
-plt.savefig("Fig.2_PK_activations_pytorch_parkinsons.png", bbox_inches="tight")
-plt.show()
 \end{verbatim}
 
 Konstruktor klasy `Model' został uzupełniony o przekazywaną funkcję aktywacji.
 W kodzie pojawiła się również lista `activations', która zawiera funkcje aktywacji takie jak ReLU, tangens hiperboliczny oraz funkcję sigmoidalną.
 Dalsza część skryptu polega na iteracji po tej liście.
-Obliczana jest maksymalna poprawność klasyfikacji w zależności od użytej funkcji aktywacji oraz na końcu rysowany jest wykres tej zależności.
+Obliczana jest maksymalna poprawność klasyfikacji w zależności od użytej funkcji aktywacji.
 
 \newpage
 \section{Eksperymenty}
@@ -591,24 +560,23 @@ Pierwsze eksperymenty dotyczą rozmiaru warstw dla sieci trójwarstwowej, natomi
 \subsection{Eksperyment 1}
 
 Eksperyment pierwszy został przeprowadzony dla przykładowych liczb neuronów będących wielokrotnościami liczby 2.
-Warstwy pierwsza i druga zawierają liczbę neuronów z zakresu 2 - 30.
+Warstwy pierwsza i druga zawierają liczbę neuronów z zakresu 2 - 28.
 Współczynnik uczenia wynosi $0.1$, natomiast liczba epok to $1000$.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth, keepaspectratio]{k1_k2_dobre_1_1000echo.png}
-    \caption{Zależność poprawności klasyfikacji od liczby neuronów z zakresu 2-30 z krokiem 2}
+    \caption{Zależność poprawności klasyfikacji od liczby neuronów z zakresu 2-28 z krokiem 2}
     \label{fig:k1k2_1}
 \end{figure}
 
-Dla danych metaparametrów wykres jest chaotyczny.
-Dominującą wartością poprawności klasyfikacji jest $79.48\%$.
-Semioptymalne wartości to: `K1' = 28, `K2' = 12, PK(K1, K2) = $94.87\%$.
+Dla danych metaparametrów wykres jest dosyć chaotyczny.
+Dominującą wartością poprawności klasyfikacji jest $79.48\%$, natomiast najlepszą wartość ($94.87\%$) uzyskano dla `K1' = 28, `K2' = 12.
 
 \newpage
 \subsection{Eksperyment 2}
-Tym razem warstwa pierwsza i druga zawierają liczbę neuronów z zakresu 100 - 900.
-Liczba epok wynosi 100, natomiast współczynnik uczenia pozostał niezmieniony ($0.1$).
+Tym razem warstwa pierwsza i druga zawierają liczbę neuronów z zakresu 100 - 900, które są wielokrotnościami liczby 100.
+Liczba epok wynosi 100, natomiast współczynnik uczenia pozostał niezmieniony i wynosi $0.1$.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth, keepaspectratio]{k1_k2_dobre_900k1k2_echo100.png}
@@ -617,25 +585,25 @@ Liczba epok wynosi 100, natomiast współczynnik uczenia pozostał niezmieniony 
 \end{figure}
 
 Sieć uczyła się zdecydowanie dłużej.
-Okazało się, że Wykres jest płaski dla większej liczby neuronów.
-Oznacza to, że zwiększanie liczby neuronów nie ma żadnego wpływu na poprawność klasyfikacji, która wynosi $79.48\%$.
+Okazało się, że wykres jest płaski dla większej liczby neuronów.
+Skrypt został uruchomiony ponownie kilkukrotnie, wynik był jednak identyczny.
+Oznacza to, że zwiększanie liczby neuronów w tym przypadku nie ma żadnego wpływu na poprawność klasyfikacji, która wynosi $79.48\%$.
 
 \newpage
 \subsection{Eksperyment 3}
-Plan trzeciego eksperymentu zakłada poszukiwanie takich metaparametrów aby wzbogacić wykres o większą głębię.
-Zmienione zostaną pozostałe parametry, nie tylko liczba neuronów w danej warstwie.
-Tym razem współczynnik uczenia będzie wynosić $0.001$, a maksymalna liczba epok to $1000$.
-Warstwa pierwsza i druga będą zawierać liczbę neuronów z zakresu 10 - 400 z krokiem 10.
+Plan trzeciego eksperymentu zakłada zweryfikowanie, czy dla liczby neuronów z zakresu 100 - 900, które tym razem są wielokrotnościami liczby 50 wykres będzie podobny.
+Zmieniona zostanie liczba epok (1000), a współczynnik uczenia będzie dalej wynosić $0.1$.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth, keepaspectratio]{k1_k2_3.png}
-    \caption{Zależność poprawności klasyfikacji od liczby neuronów z zakresu 10-400 z krokiem 10}
+    \includegraphics[width=0.8\textwidth, keepaspectratio]{k1_k2_dobre_3_950_50.png}
+    \caption{Zależność poprawności klasyfikacji od liczby neuronów z zakresu 100-900 z krokiem 50}
     \label{fig:k1k2_3}
 \end{figure}
 
-Jak widać na powyższym rysunku, sieć zachowuje się chaotycznie utrzymując jednak wciąż dosyć wysoki poziom poprawności klasyfikacji.
-Dla takich parametrów wykres nie jest już tak płaski jak w poprzednich eksperymentach.
+Sieć uczyła się jeszcze dłużej względem eksperymentu drugiego.
+Jak widać na powyższym rysunku, wykres wygląda identycznie nawet jeżeli zostanie zwiększona liczba epok oraz krok zmiany liczby neuronów.
+Dominuje poprawność klasyfikacji na poziomie $79.48\%$, tak jak w poprzednim eksperymencie.
 
 \newpage
 \subsection{Eksperyment 4}
@@ -686,8 +654,8 @@ Liczba epok zostanie przywrócona do 100.
 
 Wyniki okazały się być podobne.
 W przypadku liczby warstw większej niż 5 oraz współczynnika uczenia mniejszego od $10^{-6}$, sieć nadal wykazuje niestabilne zachowanie.
-Dla pozostałych wartości, poprawność klasyfikacji utrzymuje się na identycznym poziomie, wynoszącym $79\%$.
-Najlepszy wynik poprawności klasyfikacji uzyskano przy użyciu 4 warstw i współczynnika uczenia wynoszącego $0.001$, co dało rezultat na poziomie $87\%$.
+Dla pozostałych wartości, poprawność klasyfikacji utrzymuje się na identycznym poziomie, wynoszącym około $79\%$.
+Najlepszy wynik poprawności klasyfikacji uzyskano przy użyciu 4 warstw i współczynnika uczenia wynoszącego $0.001$, co dało rezultat na poziomie około $87\%$.
 
 \newpage
 \subsection{Eksperyment 7}
@@ -743,8 +711,11 @@ Wynika z tego, że dla tych parametrów, dla warstw ukrytych najlepiej użyć fu
 \section{Wnioski}
 Na podstawie przeprowadzonych eksperymentów można było dostrzec różne zachowania sieci w zależności od dobranych parametrów.
 
-Ustawienia można było dobrać w taki sposób, że rozmiar warstw w sieci nie miał dużego wpływu na poprawność klasyfikacji, która utrzymywała się na podobnym poziomie.
-Liczba neuronów w warstwie miała jednak ogromny wpływ jeżeli chodzi o szybkość nauki. Po zwiększeniu tej liczby w eksperymencie drugim, na koniec działania skryptu czas oczekiwania wzrósł kilkunastokrotnie względem pierwszego.
+W eksperymencie pierwszym zaobserwowano, że dla określonych parametrów sieć neuronowa może wykazywać chaotyczne zachowanie.
+Jednakże, w porównaniu do pozostałych eksperymentów, w pierwszym eksperymencie osiągnięto najwyższą skuteczność klasyfikacji na poziomie około $94\%$.
+Ustawienia można było dobrać również w taki sposób, że rozmiar warstw w sieci nie miał dużego wpływu na poprawność klasyfikacji, która utrzymywała się na podobnym poziomie.
+Liczba neuronów w warstwie miała jednak ogromny wpływ jeżeli chodzi o szybkość nauki.
+Po zwiększeniu tej liczby w eksperymencie drugim oraz później w trzecim, na koniec działania skryptu czas oczekiwania wzrósł kilkunastokrotnie względem pierwszego.
 
 Dzięki kolejnym eksperymentom można było zauważyć, że zmniejszanie współczynnika uczenia z jednoczesnym zwiększaniem liczby warstw ma tendencję do zmniejszania stabilności sieci.
 Można wyciągnąć wniosek, że optymalne wyniki sieć uzyskiwała dla umiarkowanych wartości współczynnika uczenia i liczby warstw.
@@ -756,6 +727,222 @@ Należy jednak pamiętać, że dla różnych kombinacji liczby warstw i neuronó
 Podsumowując, w większości przypadków rozmiar warstw, współczynnik uczenia, liczba warstw oraz funkcja aktywacji mają wpływ na działanie sieci.
 Optymalne wartości tych parametrów będą różnić się w zależności od konkretnego zadania i zbioru danych.
 Aby wybrać optymalne wartości wyżej wymienionych parametrów należy przeprowadzić wiele eksperymentów i dokładnie przeanalizować ich wyniki.
+
+\newpage
+\section{Dodatki}
+\subsection{Pełna część kodu służącego do badania zależności PK od liczby neuronów K1 oraz K2}
+\begin{verbatim}
+    class Model(nn.Module):
+    def __init__(self, input_dim, output_dim, K1, K2):
+        super(Model, self).__init__()
+        self.layer1 = nn.Linear(input_dim, K1)
+        self.layer2 = nn.Linear(K1, K2)
+        self.layer3 = nn.Linear(K2, output_dim)
+
+    def forward(self, x):
+        x = F.relu(self.layer1(x))
+        x = F.relu(self.layer2(x))
+        x = F.sigmoid(self.layer3(x))
+        return x
+
+
+lr_vec = np.array([1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7])
+K1_vec = np.arange(100, 5000, 100)
+K2_vec = K1_vec
+PK_2D_K1K2 = np.zeros([len(K1_vec), len(K2_vec)])
+max_epoch = 100
+PK_2D_K1K2_max = 0
+k1_ind_max = 0
+k2_ind_max = 0
+X_train = Variable(torch.from_numpy(X_train)).float()
+y_train = Variable(torch.from_numpy(y_train)).long()
+X_test = Variable(torch.from_numpy(X_test)).float()
+y_test = Variable(torch.from_numpy(y_test)).long()
+for k1_ind in range(len(K1_vec)):
+    for k2_ind in range(len(K2_vec)):
+        model = Model(X_train.shape[1], int(
+            max(y) + 1), K1_vec[k1_ind], K2_vec[k2_ind])
+        optimizer = torch.optim.Adam(model.parameters(), lr=lr_vec[1])
+        loss_fn = nn.CrossEntropyLoss()
+
+        for epoch in range(max_epoch):
+            y_pred = model(X_train)
+            loss = loss_fn(y_pred, y_train)
+
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+        with torch.no_grad():
+            y_pred = model(X_test)
+            correct = (torch.argmax(y_pred, dim=1) ==
+                       y_test).type(torch.FloatTensor)
+            PK = correct.mean().item() * 100
+            print("K1 {} | K2 {} | PK {} ".format(
+                K1_vec[k1_ind], K2_vec[k2_ind], PK))
+            PK_2D_K1K2[k1_ind, k2_ind] = PK
+
+        if PK > PK_2D_K1K2_max:
+            PK_2D_K1K2_max = PK
+            k1_ind_max = k1_ind
+            k2_ind_max = k2_ind
+
+print(K1_vec[k1_ind_max], K2_vec[k2_ind_max], PK_2D_K1K2_max)
+fig = plt.figure(figsize=(8, 8))
+ax = fig.add_subplot(111, projection="3d")
+X, Y = np.meshgrid(K1_vec, K2_vec)
+surf = ax.plot_surface(X, Y, PK_2D_K1K2.T, cmap="viridis")
+ax.set_xlabel("K1")
+ax.set_ylabel("K2")
+ax.set_zlabel("PK")
+ax.view_init(30, 200)
+plt.savefig("Fig.1_PK_K1K2_pytorch_parkinsons.png", bbox_inches="tight")
+\end{verbatim}
+
+\newpage
+\subsection{Pełna część kodu służącego do badania zależności PK od liczby warstw i współczynniku uczenia}
+\begin{verbatim}
+class Model(nn.Module):
+    def __init__(self, input_dim, output_dim, K):
+        super(Model, self).__init__()
+        layers = [nn.Linear(input_dim, K[0])]
+        for i in range(len(K) - 1):
+            layers.append(nn.Linear(K[i], K[i + 1]))
+        layers.append(nn.Linear(K[-1], output_dim))
+        self.layers = nn.ModuleList(layers)
+
+    def forward(self, x):
+        for layer in self.layers[:-1]:
+            x = F.relu(layer(x))
+        x = F.sigmoid(self.layers[-1](x))
+        return x
+
+lr_vec = np.array([1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7])
+K1 = 6
+K2 = 4
+max_layers = 10
+PK_3D_K = np.zeros((len(lr_vec), max_layers))
+max_epoch = 100
+PK_max = 0
+lr_max_ind = 0
+layers_for_max_PK = 0
+
+X_train = Variable(torch.from_numpy(X_train)).float()
+y_train = Variable(torch.from_numpy(y_train)).long()
+X_test = Variable(torch.from_numpy(X_test)).float()
+y_test = Variable(torch.from_numpy(y_test)).long()
+
+for lr_ind in range(len(lr_vec)):
+    for i in range(3, max_layers + 1):
+        layers = []
+        for j in range(i):
+            if j % 2 == 0:
+                layers.append(K1)
+            else:
+                layers.append(K2)
+        model = Model(X_train.shape[1], int(max(y) + 1), layers)
+        optimizer = torch.optim.Adam(model.parameters(), lr=lr_vec[lr_ind])
+        loss_fn = nn.CrossEntropyLoss()
+
+        for epoch in range(max_epoch):
+            y_pred = model(X_train)
+            loss = loss_fn(y_pred, y_train)
+
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+        with torch.no_grad():
+            y_pred = model(X_test)
+            correct = (torch.argmax(y_pred, dim=1) == y_test).type(torch.FloatTensor)
+            PK = correct.mean().item() * 100
+            print(
+                "LR {} | K1 {} | K2 {} | PK {} | layers {} | layers_count {} ".format(
+                    lr_vec[lr_ind], K1, K2, PK, layers, len(layers)
+                )
+            )
+            PK_3D_K[lr_ind, i - 3] = PK
+
+        if PK > PK_max:
+            PK_max = PK
+            lr_max_ind = lr_ind
+            layers_for_max_PK = len(layers)
+
+print(
+    "Max PK: {} for LR: {} | K1: {} | K2: {} | layers_count {} ".format(
+        PK_max, lr_vec[lr_max_ind], K1, K2, layers_for_max_PK
+    )
+)
+
+PK_3D_K = PK_3D_K[:, : max_layers - 2]
+fig = plt.figure(figsize=(8, 8))
+ax = fig.add_subplot(111, projection="3d")
+Y, X = np.meshgrid(np.log10(lr_vec), np.array([range(3, max_layers + 1)]))
+ax.plot_surface(X, Y, PK_3D_K.T, cmap="viridis")
+ax.set_xlabel("Liczba warstw")
+ax.set_ylabel("Współczynnik uczenia (10^x)")
+ax.set_zlabel("PK")
+plt.savefig("Fig.1_PK_layers_lr_pytorch_parkinsons.png", bbox_inches="tight")
+plt.show()
+
+\end{verbatim}
+\newpage
+\subsection{Pełna część kodu służącego do badania zależności PK od użytej funkcji aktywacji}
+\begin{verbatim}
+    class Model(nn.Module):
+    def __init__(self, input_dim, output_dim, K, activation):
+        super(Model, self).__init__()
+        layers = [nn.Linear(input_dim, K[0])]
+        for i in range(len(K) - 1):
+            layers.append(nn.Linear(K[i], K[i+1]))
+        layers.append(nn.Linear(K[-1], output_dim))
+        self.layers = nn.ModuleList(layers)
+        self.activation = activation
+
+    def forward(self, x):
+        for layer in self.layers[:-1]:
+            x = self.activation(layer(x))
+        x = F.softmax(self.layers[-1](x), dim=1)
+        return x
+
+activations = [F.relu, F.tanh, F.sigmoid]
+PK_activations = []
+layers = 5
+max_epoch = 1000
+K = [100, 100, 100, 100, 100]
+X_train = Variable(torch.from_numpy(X_train)).float()
+y_train = Variable(torch.from_numpy(y_train)).long()
+X_test = Variable(torch.from_numpy(X_test)).float()
+y_test = Variable(torch.from_numpy(y_test)).long()
+lr_vec = np.array([1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7])
+for activation in activations:
+    model = Model(X_train.shape[1], int(max(y) + 1), K, activation)
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr_vec[0])
+    loss_fn = nn.CrossEntropyLoss()
+
+    for epoch in range(max_epoch):
+        y_pred = model(X_train)
+        loss = loss_fn(y_pred, y_train)
+
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+    with torch.no_grad():
+        y_pred = model(X_test)
+        correct = (torch.argmax(y_pred, dim=1) == y_test).type(torch.FloatTensor)
+        PK = correct.mean().item() * 100
+        PK_activations.append(PK)
+        print("PK {} FUNCTION {}".format(PK, activation))
+
+fig = plt.figure(figsize=(8, 8))
+ax = fig.add_subplot()
+ax.bar(['ReLU', 'Tanh', 'Sigmoid'], PK_activations)
+ax.set_xlabel('Funkcja aktywacji')
+ax.set_ylabel('PK')
+plt.savefig("Fig.2_PK_activations_pytorch_parkinsons.png", bbox_inches="tight")
+plt.show()
+\end{verbatim}
 
 \newpage
 \begin{thebibliography}{9}

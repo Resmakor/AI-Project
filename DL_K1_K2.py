@@ -81,10 +81,10 @@ class Model(nn.Module):
 
 
 lr_vec = np.array([1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7])
-K1_vec = np.arange(2, 30, 2)
+K1_vec = np.arange(100, 5000, 100)
 K2_vec = K1_vec
 PK_2D_K1K2 = np.zeros([len(K1_vec), len(K2_vec)])
-max_epoch = 1000
+max_epoch = 100
 PK_2D_K1K2_max = 0
 k1_ind_max = 0
 k2_ind_max = 0
@@ -96,7 +96,7 @@ for k1_ind in range(len(K1_vec)):
     for k2_ind in range(len(K2_vec)):
         model = Model(X_train.shape[1], int(
             max(y) + 1), K1_vec[k1_ind], K2_vec[k2_ind])
-        optimizer = torch.optim.Adam(model.parameters(), lr=lr_vec[0])
+        optimizer = torch.optim.Adam(model.parameters(), lr=lr_vec[1])
         loss_fn = nn.CrossEntropyLoss()
 
         for epoch in range(max_epoch):

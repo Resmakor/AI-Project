@@ -85,14 +85,13 @@ class Model(nn.Module):
 
 activations = [F.relu, F.tanh, F.sigmoid]
 PK_activations = []
+layers = 5
+max_epoch = 1000
+K = [100, 100, 100, 100, 100]
 X_train = Variable(torch.from_numpy(X_train)).float()
 y_train = Variable(torch.from_numpy(y_train)).long()
 X_test = Variable(torch.from_numpy(X_test)).float()
 y_test = Variable(torch.from_numpy(y_test)).long()
-
-layers = 5
-K = [100, 100, 100, 100, 100]
-max_epoch = 1000
 lr_vec = np.array([1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7])
 for activation in activations:
     model = Model(X_train.shape[1], int(max(y) + 1), K, activation)
