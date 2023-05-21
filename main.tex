@@ -337,6 +337,7 @@ Tworzona jest macierz `x' poprzez konkatenację dwóch części z `data', aby po
 Później macierz `x' jest transponowana i konwertowana do typu `float'.
 Następnie tworzony jest wektor `y\_t' i zmieniany jest jego kształt na (1, liczba przykładów).
 Kolejno tworzona jest macierz, w której każdy wiersz zawiera indeks, minimalną wartość i maksymalną wartość dla odpowiadającego wiersza macierzy `x'.
+
 Kolejnym etapem jest normalizacja danych.
 Obliczane są minimalne oraz maksymalne wartości dla każego wiersza macierzy `x' za pomocą `x\_min = x.min(axis=1)' oraz `x\_max = x.max(axis=1)'.
 Później ustalane są minimalne i maksymalne wartości dla normalizacji (-1 oraz 0).
@@ -345,7 +346,20 @@ Wykonana zostaje również transpozycja macierzy, która tworzy macierz wynikow�
 
 Dalszym etapem jest stworzenie indeksów, które posortują wartości wektora `y\_t' w kolejności rosnącej.
 Utworzona zostaje macierz `x\_n\_s', o takim samym kształcie jak `x'. Zostanie użyta do przechowywania znormalizowanych danych po sortowaniu.
-Analogicznie zostaje utworzona macierz `y\_t\_s'
+Analogicznie zostaje utworzona macierz `y\_t\_s', która ma taki sam kształt jak `y\_t' i będzie przechowywać posortowane wartości `y\_t'.
+
+Następnie występuje pętla, która przechodzi przez wszystkie próbki danych.
+Wartości `y\_t', `x\_norm' są sortowane i przypisywane odpowiednio do `y\_t\_s' oraz `x\_n\_s'.
+Dane `x', `y\_t', `x\_norm', `x\_n\_s' i `y\_t\_s' zapisywane są do pliku `parkinsons.hkl' i później ponownie odczytywane.
+
+Kolejnym etapem jest sprawdzenie czy najmniejsza wartość w wektorze `y\_t' jest większa niż zero.
+Jeżeli jest, to od `y\_t' (jako tablicy jednowymiarowej), odejmowane jest 1, gdyż indeks pierwszej klasy powinien być równy 0.
+Później transponowana jest macierz `x' i przypisana do `X'.
+Inicjalizowany jest obiekt `scaler', który skaluje dane w macierzy `X' tak, aby miały średnią równą 0 i wariancję równą 1.
+
+Ostatnia linia kodu dzieli zestaw danych na zbiór treningowy i testowy przy użyciu funkcji `train\_test\_split'.
+Dane są podzielone w takim stosunku, że 20\% danych wejściowych trafia do zbioru testowego, a 80\% do zbioru treningowego.
+
 \subsection{Główna część skryptu dla zależności poprawności klasyfikacji od liczby neuronów w warstwach [6]}
 \begin{verbatim}
 class Model(nn.Module):
