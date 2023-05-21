@@ -80,8 +80,8 @@ class Model(nn.Module):
         return x
     
 lr_vec = np.array([1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7])
-K1 = 200
-K2 = 300
+K1 = 28
+K2 = 12
 max_layers = 10
 PK_3D_K = np.zeros((len(lr_vec), max_layers))
 max_epoch = 100

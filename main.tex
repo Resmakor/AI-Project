@@ -371,9 +371,9 @@ for k1_ind in range(len(K1_vec)):
             y_pred = model(X_train)
             loss = loss_fn(y_pred, y_train)
 
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
 
         with torch.no_grad():
             y_pred = model(X_test)
@@ -591,38 +591,33 @@ Pierwsze eksperymenty dotyczą rozmiaru warstw dla sieci trójwarstwowej, natomi
 
 Eksperyment pierwszy został przeprowadzony dla przykładowych liczb neuronów będących wielokrotnościami liczby 2.
 Warstwy pierwsza i druga zawierają liczbę neuronów z zakresu 2 - 30.
-Współczynnik uczenia wynosi $0.1$, natomiast liczba epok to $100$.
+Współczynnik uczenia wynosi $0.1$, natomiast liczba epok to $1000$.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth, keepaspectratio]{k1_k2_1.png}
+    \includegraphics[width=0.8\textwidth, keepaspectratio]{k1_k2_dobre_1_1000echo.png}
     \caption{Zależność poprawności klasyfikacji od liczby neuronów z zakresu 2-30 z krokiem 2}
     \label{fig:k1k2_1}
 \end{figure}
 
-Dla danych metaparametrów wykres jest płaski.
-Poza punktami dla małej liczby neuronów w warstwie K2, dominującą wartością poprawności klasyfikacji jest $79.48\%$.
-Oznacza, to że rozmiary warstw mogą mieć minimalny wpływ na wydajność sieci dla takich metaparametrów.
-Powyższa hipoteza zostanie zweryfikowana w drugim eksperymencie.
-
-Semioptymalne wartości to: `K1' = 6, `K2' = 4, PK(K1, K2) = $87.17\%$.
+Dla danych metaparametrów wykres jest chaotyczny.
+Dominującą wartością poprawności klasyfikacji jest $79.48\%$.
+Semioptymalne wartości to: `K1' = 28, `K2' = 12, PK(K1, K2) = $94.87\%$.
 
 \newpage
 \subsection{Eksperyment 2}
-Tym razem warstwa pierwsza i druga zawierają liczbę neuronów z zakresu 2 - 200.
-Pozostałe parametry są niezmienione.
-
+Tym razem warstwa pierwsza i druga zawierają liczbę neuronów z zakresu 100 - 900.
+Liczba epok wynosi 100, natomiast współczynnik uczenia pozostał niezmieniony ($0.1$).
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth, keepaspectratio]{k1_k2_2.png}
-    \caption{Zależność poprawności klasyfikacji od liczby neuronów z zakresu 2-200 z krokiem 2}
+    \includegraphics[width=0.8\textwidth, keepaspectratio]{k1_k2_dobre_900k1k2_echo100.png}
+    \caption{Zależność poprawności klasyfikacji od liczby neuronów z zakresu 100-900 z krokiem 100}
     \label{fig:k1k2_2}
 \end{figure}
 
 Sieć uczyła się zdecydowanie dłużej.
-Okazało się jednak, że hipoteza z eksperymentu pierwszego jest prawdziwa.
-Wykres jest płaski również dla większej liczby neuronów.
-Minimalnie wzrosła maksymalna poprawność klasyfikacji z $87.17\%$ do $92.30\%$ dla K1 = 90 oraz K2 = 8.
+Okazało się, że Wykres jest płaski dla większej liczby neuronów.
+Oznacza to, że zwiększanie liczby neuronów nie ma żadnego wpływu na poprawność klasyfikacji, która wynosi $79.48\%$.
 
 \newpage
 \subsection{Eksperyment 3}
