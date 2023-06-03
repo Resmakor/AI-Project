@@ -67,7 +67,7 @@ Jednym z najważniejszych składników neuronu są wagi, których wartości decy
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth, keepaspectratio]{model_neuronu.png}
+    \includegraphics[width=0.8\textwidth, keepaspectratio]{pictures/model_neuronu.png}
     \caption{Model neuronu [3]}
     \label{fig:zdjecie}
 \end{figure}
@@ -120,11 +120,11 @@ Istnieje również funkcja aktywacji softmax, która dla danego wektora wyników
 
 Funkcję softmax można zdefiniować w następujący sposób:
 \[
-    f(z)_i = \frac{e^{z_i}}{\sum_{j=1}^{n} e^{z_j}}
+    f(z_i) = \frac{e^{z_i}}{\sum_{j=1}^{n} e^{z_j}}
 \]
 gdzie:
 \begin{itemize}
-    \item \(f(z)_i\) -- \(i\)-ty element wyniku funkcji softmax dla wektora wyników \(\mathbf{z}\),
+    \item \(f(z_i)\) -- \(i\)-ty element wyniku funkcji softmax dla wektora wyników \(\mathbf{z}\),
     \item \(e^{z_i}\) -- funkcja wykładniczą podniesiona do potęgi \(z_i\),
     \item \(z_i\) -- \(i\)-ty element wektora wyników,
     \item \(\sum_{j=1}^{n} e^{z_j}\) -- suma funkcji wykładniczych dla wszystkich elementów wektora wyników,
@@ -161,7 +161,7 @@ Propagacja wsteczna umożliwia obliczenie gradientów wag sieci na podstawie fun
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth, keepaspectratio]{siec_gleboka.png}
+    \includegraphics[width=1\textwidth, keepaspectratio]{pictures/siec_gleboka.png}
     \caption{Sieć głęboka [5]}
     \label{fig:siec}
 \end{figure}
@@ -617,7 +617,7 @@ Współczynnik uczenia wynosi $0.1$, natomiast liczba epok to $1000$.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth, keepaspectratio]{k1_k2_dobre_1_1000echo.png}
+    \includegraphics[width=0.8\textwidth, keepaspectratio]{pictures/k1_k2_dobre_1_1000echo.png}
     \caption{Zależność poprawności klasyfikacji od liczby neuronów z zakresu 2-28 z krokiem 2}
     \label{fig:k1k2_1}
 \end{figure}
@@ -631,7 +631,7 @@ Tym razem warstwa pierwsza i druga zawierają liczbę neuronów z zakresu 100 - 
 Liczba epok wynosi 100, natomiast współczynnik uczenia pozostał niezmieniony i wynosi $0.1$.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth, keepaspectratio]{k1_k2_dobre_900k1k2_echo100.png}
+    \includegraphics[width=0.8\textwidth, keepaspectratio]{pictures/k1_k2_dobre_900k1k2_echo100.png}
     \caption{Zależność poprawności klasyfikacji od liczby neuronów z zakresu 100-900 z krokiem 100}
     \label{fig:k1k2_2}
 \end{figure}
@@ -648,7 +648,7 @@ Zmieniona zostanie liczba epok (1000), a współczynnik uczenia będzie dalej wy
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth, keepaspectratio]{k1_k2_dobre_3_950_50.png}
+    \includegraphics[width=0.8\textwidth, keepaspectratio]{pictures/k1_k2_dobre_3_950_50.png}
     \caption{Zależność poprawności klasyfikacji od liczby neuronów z zakresu 100-900 z krokiem 50}
     \label{fig:k1k2_3}
 \end{figure}
@@ -666,7 +666,7 @@ Liczba epok została ustawiona na 100, a maksymalna liczba warstw, na których b
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth, keepaspectratio]{LR_LAYERS_100ECHO.PNG}
+    \includegraphics[width=0.8\textwidth, keepaspectratio]{pictures/LR_LAYERS_100ECHO.PNG}
     \caption{Zależność poprawności klasyfikacji od liczby warstw i współczynniku uczenia}
     \label{fig:lr_layers_1}
 \end{figure}
@@ -682,7 +682,7 @@ Kolejny eksperyment to zweryfikuje.
 Eksperyment będzie przeprowadzony w sposób analogiczny do poprzedniego, ale liczba epok zostanie zwiększona do 3000.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth, keepaspectratio]{LR_LAYERS_3000ECHO.PNG}
+    \includegraphics[width=0.8\textwidth, keepaspectratio]{pictures/LR_LAYERS_3000ECHO.PNG}
     \caption{Zależność poprawności klasyfikacji od liczby warstw i współczynniku uczenia}
     \label{fig:lr_layers_2}
 \end{figure}
@@ -699,7 +699,7 @@ Liczba epok zostanie przywrócona do 100.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth, keepaspectratio]{LR_LAYERS_1500_1000K1K2.PNG}
+    \includegraphics[width=0.8\textwidth, keepaspectratio]{pictures/LR_LAYERS_1500_1000K1K2.PNG}
     \caption{Zależność poprawności klasyfikacji od liczby warstw i współczynniku uczenia}
     \label{fig:lr_layers_3}
 \end{figure}
@@ -719,7 +719,7 @@ Eksperyment zostanie przeprowadzony dla wartości: `K1' = 6, `K2' = 4, współcz
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth, keepaspectratio]{ACTIVATION_1_1.png}
+    \includegraphics[width=0.8\textwidth, keepaspectratio]{pictures/ACTIVATION_1_1.png}
     \caption{Zależność poprawności klasyfikacji od użytej funkcji przejścia}
     \label{fig:activ_1}
 \end{figure}
@@ -730,7 +730,7 @@ Skrypt został uruchomiony ponownie, używając tych samych parametrów, jednak 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth, keepaspectratio]{ACTIVATION_1_2.png}
+    \includegraphics[width=0.8\textwidth, keepaspectratio]{pictures/ACTIVATION_1_2.png}
     \caption{Zależność poprawności klasyfikacji od użytej funkcji przejścia}
     \label{fig:activ_2}
 \end{figure}
@@ -748,7 +748,7 @@ Współczynnik uczenia będzie wynosił 0.1, a liczba epok zostanie zwiększona 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth, keepaspectratio]{ACTIVATION_2_1.png}
+    \includegraphics[width=0.8\textwidth, keepaspectratio]{pictures/ACTIVATION_2_1.png}
     \caption{Zależność poprawności klasyfikacji od użytej funkcji przejścia}
     \label{fig:activ_2}
 \end{figure}
